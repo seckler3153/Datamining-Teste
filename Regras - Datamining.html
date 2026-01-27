@@ -25,7 +25,7 @@
             border: 8px solid #000;
             width: 950px;
             height: auto;
-            position: relative; /* Essencial para o botão se fixar aqui */
+            position: relative;
         }
 
         /* Botão fixado no canto superior direito do box branco */
@@ -58,7 +58,7 @@
             margin-top: 0;
             margin-bottom: 40px;
             color: #000;
-            padding: 0 100px; /* Espaço lateral para não bater no botão */
+            padding: 0 100px;
         }
 
         .categoria-bloco {
@@ -163,8 +163,9 @@
             h1 {
                 font-size: 22px;
                 padding: 0;
-                text-align: left;
+                text-align: center; /* Garantindo a centralização no mobile */
                 margin-top: 20px;
+                margin-right: 0; /* Removendo a margem lateral */
             }
             .regra-com-imagem {
                 flex-direction: column;
