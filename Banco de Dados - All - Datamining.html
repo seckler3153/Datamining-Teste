@@ -137,6 +137,25 @@
         .coop-container #player-name { font-size: 50px; text-decoration: underline; outline: none; }
         .coop-container #contador-header { font-size: 80px; font-weight: bold; color: #333; background: #eee; padding: 0 20px; border: 4px solid #000; text-align: center; }
 
+        /* Botões Mobile do Contador (Escondidos por padrão) */
+        .mobile-counter-controls {
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            width: 100%;
+        }
+        .btn-counter {
+            padding: 15px 30px;
+            font-family: 'Arial Black', sans-serif;
+            font-size: 24px;
+            background: #fff;
+            border: 4px solid #000;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .btn-counter:active { background: #ddd; }
+
         /* AJUSTES MOBILE ESPECÍFICOS */
         @media (max-width: 768px) {
             .control-header { padding: 10px; gap: 8px; }
@@ -163,6 +182,9 @@
             .icon-box { width: 30px !important; height: 30px !important; }
             .player-name { font-size: 18px !important; }
             .coop-container #contador-header { font-size: 30px !important; }
+
+            /* Mostra os botões de controle apenas no mobile */
+            .mobile-counter-controls { display: flex; }
         }
 
         .color-menu, .image-selector-menu {
@@ -240,13 +262,16 @@
             <div id="contador-header">120</div>
         </div>
         <div class="grid-frame" id="coop-grid-frame"></div>
+        <div class="mobile-counter-controls">
+            <button class="btn-counter" onclick="alterarContador(-1)">-1</button>
+            <button class="btn-counter" onclick="alterarContador(1)">+1</button>
+        </div>
     </div>
 </div>
 
 <div id="pvp-grid" class="grid-players"></div>
 
 <script>
-    // TODA A LÓGICA DE SCRIPT FOI MANTIDA IGUAL AO SEU ORIGINAL
     const icons = ['V', 'A', 'B', 'Mini Patch', 'Mini Bug', 'Pedaço do Mapa'];
     let valorContador = 120;
     let modoAtual = '4';
@@ -398,6 +423,12 @@
         }
     }
 
+    // Função para alterar contador (usada pelos botões mobile)
+    function alterarContador(valor) {
+        valorContador += valor;
+        document.getElementById('contador-header').innerText = valorContador;
+    }
+
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.drop-zone') && !e.target.closest('.image-selector-menu') && !e.target.closest('.btn-cor-toggle')) {
             imageSelector.style.display = 'none';
@@ -407,9 +438,8 @@
 
     window.addEventListener('keydown', (e) => {
         if (e.target.getAttribute('contenteditable') === 'true' || modoAtual !== 'coop') return;
-        if (e.key === "Enter") { valorContador--; e.preventDefault(); }
-        else if (e.code === "Space") { valorContador++; e.preventDefault(); }
-        document.getElementById('contador-header').innerText = valorContador;
+        if (e.key === "Enter") { alterarContador(-1); e.preventDefault(); }
+        else if (e.code === "Space") { alterarContador(1); e.preventDefault(); }
     });
 
     document.addEventListener('DOMContentLoaded', () => updateLayout('4'));
