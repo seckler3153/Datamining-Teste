@@ -31,22 +31,29 @@
             gap: 8px;
             border-bottom: 4px solid #000;
             z-index: 1000;
-            flex-wrap: wrap; /* Faz os botões pularem linha no celular */
+            flex-wrap: wrap; /* Permite que os botões quebrem linha mantendo o tamanho */
         }
 
         .nav-btn {
             background: #444; 
             color: white; 
             border: 2px solid #fff;
-            padding: 10px 15px; 
+            padding: 5px 10px; 
             cursor: pointer; 
-            font-size: 13px;
+            font-size: 14px;
             text-transform: uppercase; 
             transition: all 0.2s; 
             border-radius: 5px;
-            flex-grow: 1; /* Faz os botões preencherem o espaço no mobile */
-            max-width: 200px;
+            
+            /* --- AJUSTE DE TAMANHO IGUAL --- */
+            flex: 1 0 130px; /* Base de 130px, crescem por igual */
+            max-width: 180px; /* Limite máximo para não esticar demais no PC */
+            height: 45px;    /* Altura fixa para todos */
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
+            box-sizing: border-box;
         }
 
         .nav-btn:hover { background: var(--primary); transform: translateY(-2px); }
@@ -57,7 +64,7 @@
         iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: none; }
         iframe.active { display: block; }
 
-        /* Ajuste do Zoom na aba Caminhos - Desativado em telas pequenas */
+        /* Ajuste do Zoom na aba Caminhos */
         #frame-caminhos.active {
             display: block;
             width: 50%;
@@ -74,10 +81,10 @@
         }
 
         .img-header {
-            width: 80%;
-            max-width: 350px; 
+            width: 70%;
+            max-width: 300px; 
             height: auto; 
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.6));
             animation: pulsar 2s infinite ease-in-out;
         }
@@ -88,25 +95,25 @@
             100% { transform: scale(1); }
         }
 
-        #welcome-screen h1 { font-size: clamp(30px, 10vw, 60px); margin: 0 0 10px 0; }
-        #welcome-screen p { font-size: clamp(18px, 5vw, 30px); margin: 0; opacity: 0.9; text-transform: uppercase; }
+        #welcome-screen h1 { font-size: clamp(28px, 8vw, 60px); margin: 0; }
+        #welcome-screen p { font-size: clamp(16px, 4vw, 25px); margin: 5px 0 0 0; opacity: 0.9; text-transform: uppercase; }
 
-        /* --- AJUSTES EXCLUSIVOS PARA MOBILE --- */
+        /* --- AJUSTES MOBILE --- */
         @media (max-width: 768px) {
             header {
                 padding: 5px;
-                gap: 4px;
-                max-height: 40vh; /* Limita o menu para não cobrir a tela toda */
+                gap: 5px;
                 overflow-y: auto;
+                max-height: 35vh;
             }
 
             .nav-btn {
-                font-size: 11px;
-                padding: 8px 5px;
+                font-size: 10px;
+                flex: 1 0 30%; /* Três botões por linha no celular */
                 min-width: 100px;
+                height: 40px;
             }
 
-            /* No celular, o zoom de 2x geralmente atrapalha a navegação */
             #frame-caminhos.active {
                 width: 100%;
                 height: 100%;
@@ -130,7 +137,7 @@
 </header>
 
 <div id="content-area">
-    <div id="welcome" class="active" style="height: 100%;">
+    <div id="welcome" class="active">
         <div id="welcome-screen">
             <img src="Ícone 11 - Datamine.png" alt="Ícone Datamine" class="img-header">
             <h1>DATAMINING</h1>
@@ -156,13 +163,12 @@
         document.querySelectorAll('iframe').forEach(f => f.classList.remove('active'));
 
         if (id === 'welcome') {
-            document.getElementById('welcome').style.display = 'block';
+            document.getElementById('welcome').style.display = 'flex';
         } else {
             document.getElementById('frame-' + id).classList.add('active');
         }
     }
 
-    // --- LÓGICA DE SINCRONIZAÇÃO BIDIRECIONAL ---
     window.addEventListener('message', function(event) {
         const bancoFrame = document.getElementById('frame-banco-all');
         const placaresFrame = document.getElementById('frame-placares');
