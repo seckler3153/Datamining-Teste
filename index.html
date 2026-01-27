@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Central - Guia do Jogo - Datamining</title>
+    <link rel="icon" type="image/png" href="Ícone 11 - Datamine.png">
+    <style>
+        :root {
+            --primary: #11806A;
+            --dark: #0a4d40;
+            --accent: #ffeb00;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Arial Black', sans-serif;
+            background-color: var(--primary);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            border-bottom: 4px solid #000;
+            z-index: 1000;
+            flex-wrap: wrap; /* Faz os botões pularem linha no celular */
+        }
+
+        .nav-btn {
+            background: #444; 
+            color: white; 
+            border: 2px solid #fff;
+            padding: 10px 15px; 
+            cursor: pointer; 
+            font-size: 13px;
+            text-transform: uppercase; 
+            transition: all 0.2s; 
+            border-radius: 5px;
+            flex-grow: 1; /* Faz os botões preencherem o espaço no mobile */
+            max-width: 200px;
+            text-align: center;
+        }
+
+        .nav-btn:hover { background: var(--primary); transform: translateY(-2px); }
+        .nav-btn.active { background: var(--primary); border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
+
+        #content-area { flex-grow: 1; position: relative; width: 100%; overflow: hidden; }
+
+        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: none; }
+        iframe.active { display: block; }
+
+        /* Ajuste do Zoom na aba Caminhos - Desativado em telas pequenas */
+        #frame-caminhos.active {
+            display: block;
+            width: 50%;
+            height: 50%;
+            transform: scale(2);
+            transform-origin: 0 0;
+        }
+
+        #welcome-screen {
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: center; height: 100%; color: white;
+            text-align: center; text-shadow: 3px 3px 0px #000;
+            padding: 20px;
+        }
+
+        .img-header {
+            width: 80%;
+            max-width: 350px; 
+            height: auto; 
+            margin-bottom: 30px;
+            filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.6));
+            animation: pulsar 2s infinite ease-in-out;
+        }
+
+        @keyframes pulsar {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        #welcome-screen h1 { font-size: clamp(30px, 10vw, 60px); margin: 0 0 10px 0; }
+        #welcome-screen p { font-size: clamp(18px, 5vw, 30px); margin: 0; opacity: 0.9; text-transform: uppercase; }
+
+        /* --- AJUSTES EXCLUSIVOS PARA MOBILE --- */
+        @media (max-width: 768px) {
+            header {
+                padding: 5px;
+                gap: 4px;
+                max-height: 40vh; /* Limita o menu para não cobrir a tela toda */
+                overflow-y: auto;
+            }
+
+            .nav-btn {
+                font-size: 11px;
+                padding: 8px 5px;
+                min-width: 100px;
+            }
+
+            /* No celular, o zoom de 2x geralmente atrapalha a navegação */
+            #frame-caminhos.active {
+                width: 100%;
+                height: 100%;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <button class="nav-btn active" onclick="showCommand('welcome', this)">Início</button>
+    <button class="nav-btn" onclick="showCommand('banco-all', this)">Banco de Dados</button>
+    <button class="nav-btn" onclick="showCommand('regras', this)">Regras</button>
+    <button class="nav-btn" onclick="showCommand('pastas', this)">Pastas</button>
+    <button class="nav-btn" onclick="showCommand('mapas', this)">Mapas</button>
+    <button class="nav-btn" onclick="showCommand('roletas', this)">Roletas</button>
+    <button class="nav-btn" onclick="showCommand('caminhos', this)">Caminhos</button>
+    <button class="nav-btn" onclick="showCommand('recursos', this)">Recursos</button>
+    <button class="nav-btn" onclick="showCommand('placares', this)">Placares</button>
+</header>
+
+<div id="content-area">
+    <div id="welcome" class="active" style="height: 100%;">
+        <div id="welcome-screen">
+            <img src="Ícone 11 - Datamine.png" alt="Ícone Datamine" class="img-header">
+            <h1>DATAMINING</h1>
+            <p>Guia do Jogo</p>
+        </div>
+    </div>
+
+    <iframe id="frame-banco-all" src="Banco de Dados - All - Datamining.html"></iframe>
+    <iframe id="frame-regras" src="Regras - Datamining.html"></iframe>
+    <iframe id="frame-pastas" src="Pastas - Datamining.html"></iframe>
+    <iframe id="frame-mapas" src="Mapas - Datamining.html"></iframe>
+    <iframe id="frame-roletas" src="Roletas - Datamining.html"></iframe>
+    <iframe id="frame-caminhos" src="Caminhos - Datamining.html"></iframe>
+    <iframe id="frame-recursos" src="Recursos - Datamining.html"></iframe>
+    <iframe id="frame-placares" src="Placares Secretos - Datamining.html"></iframe>
+</div>
+
+<script>
+    function showCommand(id, btn) {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('welcome').style.display = 'none';
+        document.querySelectorAll('iframe').forEach(f => f.classList.remove('active'));
+
+        if (id === 'welcome') {
+            document.getElementById('welcome').style.display = 'block';
+        } else {
+            document.getElementById('frame-' + id).classList.add('active');
+        }
+    }
+
+    // --- LÓGICA DE SINCRONIZAÇÃO BIDIRECIONAL ---
+    window.addEventListener('message', function(event) {
+        const bancoFrame = document.getElementById('frame-banco-all');
+        const placaresFrame = document.getElementById('frame-placares');
+
+        if (event.data.type === 'syncPlayer') {
+            if (placaresFrame && placaresFrame.contentWindow) {
+                placaresFrame.contentWindow.postMessage({
+                    type: 'updateFromBank',
+                    index: event.data.index,
+                    name: event.data.name,
+                    color: event.data.color
+                }, '*');
+            }
+        } 
+        else if (event.data.type === 'syncFromPlacares') {
+            if (bancoFrame && bancoFrame.contentWindow) {
+                bancoFrame.contentWindow.postMessage(event.data, '*');
+            }
+        }
+    });
+</script>
+</body>
+</html>
