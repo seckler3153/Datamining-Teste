@@ -2,7 +2,6 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Central - Guia do Jogo - Datamining</title>
     <link rel="icon" type="image/png" href="Ícone 11 - Datamine.png">
     <style>
@@ -21,6 +20,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            min-width: 320px; 
         }
 
         header {
@@ -32,20 +32,23 @@
             border-bottom: 4px solid #000;
             z-index: 1000;
             flex-wrap: wrap;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .nav-btn {
             background: #444; 
             color: white; 
             border: 2px solid #fff;
-            padding: 5px 10px; 
+            padding: 5px; 
             cursor: pointer; 
             font-size: 14px;
             text-transform: uppercase; 
             transition: all 0.2s; 
             border-radius: 5px;
-            flex: 1 0 130px;
-            max-width: 180px;
+            /* MODIFICAÇÃO: flex-grow em 0 e largura fixa para desktop */
+            flex: 0 0 150px;
+            width: 150px;
             height: 45px;
             display: flex;
             align-items: center;
@@ -64,7 +67,6 @@
             overflow: hidden; 
         }
 
-        /* Ajuste crucial: Welcome e Iframes compartilham o mesmo comportamento de posicionamento */
         iframe, #welcome { 
             position: absolute; 
             top: 0; 
@@ -76,7 +78,7 @@
         }
 
         iframe.active, #welcome.active { 
-            display: flex; /* Welcome usa flex para centralizar conteúdo */
+            display: flex; 
             flex-direction: column;
         }
 
@@ -112,7 +114,6 @@
         #welcome-screen h1 { font-size: clamp(28px, 8vw, 60px); margin: 0; }
         #welcome-screen p { font-size: clamp(16px, 4vw, 25px); margin: 5px 0 0 0; opacity: 0.9; text-transform: uppercase; }
 
-        /* Ajuste do Zoom na aba Caminhos */
         #frame-caminhos.active {
             display: block;
             width: 50%;
@@ -121,7 +122,7 @@
             transform-origin: 0 0;
         }
 
-        /* --- AJUSTES MOBILE --- */
+        /* AJUSTES MOBILE */
         @media (max-width: 768px) {
             header {
                 padding: 5px;
@@ -132,8 +133,9 @@
 
             .nav-btn {
                 font-size: 11px;
-                flex: 1 0 30%;
-                min-width: 100px;
+                /* MODIFICAÇÃO: Travando largura em 30% para manter 3 colunas fixas */
+                flex: 0 0 30%;
+                width: 30%;
                 height: 40px;
             }
 
@@ -180,15 +182,12 @@
 
 <script>
     function showCommand(id, btn) {
-        // Remove active de todos os botões
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
-        // Esconde TODOS os elementos de conteúdo (welcome e iframes)
         document.getElementById('welcome').classList.remove('active');
         document.querySelectorAll('iframe').forEach(f => f.classList.remove('active'));
 
-        // Mostra apenas o selecionado
         if (id === 'welcome') {
             document.getElementById('welcome').classList.add('active');
         } else {
@@ -196,27 +195,14 @@
         }
     }
 
-    // Sincronização mantida
-    window.addEventListener('message', function(event) {
-        const bancoFrame = document.getElementById('frame-banco-all');
-        const placaresFrame = document.getElementById('frame-placares');
-
-        if (event.data.type === 'syncPlayer') {
-            if (placaresFrame && placaresFrame.contentWindow) {
-                placaresFrame.contentWindow.postMessage({
-                    type: 'updateFromBank',
-                    index: event.data.index,
-                    name: event.data.name,
-                    color: event.data.color
-                }, '*');
-            }
-        } 
-        else if (event.data.type === 'syncFromPlacares') {
-            if (bancoFrame && bancoFrame.contentWindow) {
-                bancoFrame.contentWindow.postMessage(event.data, '*');
-            }
+    window.onload = function() {
+        if (!document.querySelector('meta[name="viewport"]')) {
+            let v = document.createElement('meta');
+            v.name = "viewport";
+            v.content = "width=device-width, initial-scale=1.0";
+            document.getElementsByTagName('head')[0].appendChild(v);
         }
-    });
+    };
 </script>
 </body>
 </html>
