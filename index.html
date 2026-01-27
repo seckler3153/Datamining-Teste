@@ -31,7 +31,7 @@
             gap: 8px;
             border-bottom: 4px solid #000;
             z-index: 1000;
-            flex-wrap: wrap; /* Permite que os botões quebrem linha mantendo o tamanho */
+            flex-wrap: wrap;
         }
 
         .nav-btn {
@@ -44,11 +44,9 @@
             text-transform: uppercase; 
             transition: all 0.2s; 
             border-radius: 5px;
-            
-            /* --- AJUSTE DE TAMANHO IGUAL --- */
-            flex: 1 0 130px; /* Base de 130px, crescem por igual */
-            max-width: 180px; /* Limite máximo para não esticar demais no PC */
-            height: 45px;    /* Altura fixa para todos */
+            flex: 1 0 130px;
+            max-width: 180px;
+            height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -59,25 +57,41 @@
         .nav-btn:hover { background: var(--primary); transform: translateY(-2px); }
         .nav-btn.active { background: var(--primary); border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
-        #content-area { flex-grow: 1; position: relative; width: 100%; overflow: hidden; }
+        #content-area { 
+            flex-grow: 1; 
+            position: relative; 
+            width: 100%; 
+            overflow: hidden; 
+        }
 
-        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: none; }
-        iframe.active { display: block; }
+        /* Ajuste crucial: Welcome e Iframes compartilham o mesmo comportamento de posicionamento */
+        iframe, #welcome { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+            display: none; 
+        }
 
-        /* Ajuste do Zoom na aba Caminhos */
-        #frame-caminhos.active {
-            display: block;
-            width: 50%;
-            height: 50%;
-            transform: scale(2);
-            transform-origin: 0 0;
+        iframe.active, #welcome.active { 
+            display: flex; /* Welcome usa flex para centralizar conteúdo */
+            flex-direction: column;
         }
 
         #welcome-screen {
-            display: flex; flex-direction: column; justify-content: center;
-            align-items: center; height: 100%; color: white;
-            text-align: center; text-shadow: 3px 3px 0px #000;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center;
+            align-items: center; 
+            width: 100%;
+            height: 100%; 
+            color: white;
+            text-align: center; 
+            text-shadow: 3px 3px 0px #000;
             padding: 20px;
+            box-sizing: border-box;
         }
 
         .img-header {
@@ -98,18 +112,27 @@
         #welcome-screen h1 { font-size: clamp(28px, 8vw, 60px); margin: 0; }
         #welcome-screen p { font-size: clamp(16px, 4vw, 25px); margin: 5px 0 0 0; opacity: 0.9; text-transform: uppercase; }
 
+        /* Ajuste do Zoom na aba Caminhos */
+        #frame-caminhos.active {
+            display: block;
+            width: 50%;
+            height: 50%;
+            transform: scale(2);
+            transform-origin: 0 0;
+        }
+
         /* --- AJUSTES MOBILE --- */
         @media (max-width: 768px) {
             header {
                 padding: 5px;
                 gap: 5px;
-                overflow-y: auto;
                 max-height: 35vh;
+                overflow-y: auto;
             }
 
             .nav-btn {
-                font-size: 10px;
-                flex: 1 0 30%; /* Três botões por linha no celular */
+                font-size: 11px;
+                flex: 1 0 30%;
                 min-width: 100px;
                 height: 40px;
             }
@@ -157,18 +180,23 @@
 
 <script>
     function showCommand(id, btn) {
+        // Remove active de todos os botões
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById('welcome').style.display = 'none';
+        
+        // Esconde TODOS os elementos de conteúdo (welcome e iframes)
+        document.getElementById('welcome').classList.remove('active');
         document.querySelectorAll('iframe').forEach(f => f.classList.remove('active'));
 
+        // Mostra apenas o selecionado
         if (id === 'welcome') {
-            document.getElementById('welcome').style.display = 'flex';
+            document.getElementById('welcome').classList.add('active');
         } else {
             document.getElementById('frame-' + id).classList.add('active');
         }
     }
 
+    // Sincronização mantida
     window.addEventListener('message', function(event) {
         const bancoFrame = document.getElementById('frame-banco-all');
         const placaresFrame = document.getElementById('frame-placares');
