@@ -989,7 +989,7 @@
 
 		// Atualize sua função lidarMouseDown para incluir esta nova lógica de interceptação
 		function lidarMouseDown(e, cell) {
-			// LÓGICA MOBILE DE CAMINHOS
+			// LÓGICA MOBILE DE CAMINHOS (Mantida conforme original)
 			if (estadoCaminhoMobile > 0) {
 				if (!primeiroCliqueCaminho) {
 					primeiroCliqueCaminho = cell;
@@ -1004,24 +1004,35 @@
 				}
 				return; 
 			}
-			
+    
 			if (modoMeepleMobile) {
-				// No modo Meeple mobile, o clique no quadrante não faz nada.
-				// O arraste é controlado pelos eventos de mousedown nos próprios ícones (arrastavel).
 				return;
 			}
 
-			// ... restante do seu código original lidarMouseDown ...
-			if (e.button === 0 && componenteSelecionado) {
-				posicionarIconeFixo(cell);
-				return;
-			}
-			
-			if (!componenteSelecionado && estadoCaminhoMobile === 0 && !modoMeepleMobile) {
+			// --- LÓGICA DESKTOP ---
+
+			// 1. Clique Esquerdo (Botão 0)
+			if (e.button === 0) {
+				if (componenteSelecionado) {
+					posicionarIconeFixo(cell);
+				} else {
+					// Se não há componente, inicia a criação de caminho
+					cellInicial = cell;
+					criandoLinha = true;
+					const centro = getCentro(cell);
+					const lg = document.getElementById('linhaGuia');
+					lg.setAttribute("x1", centro.x); lg.setAttribute("y1", centro.y);
+					lg.setAttribute("x2", centro.x); lg.setAttribute("y2", centro.y);
+					lg.setAttribute("stroke-width", calcularGrossura());
+					lg.style.display = "block";
+				}
+			} 
+			// 2. Clique Direito (Botão 2)
+			else if (e.button === 2) {
+				// Apenas esconde/revela se não houver componente sendo colocado
 				cell.classList.toggle('escondido');
 				salvarAcao('esconder', cell);
 			}
-			// ...
 		}
 		
 		// Suporte para arrastar com o dedo (Touch Events)
@@ -1053,3 +1064,4 @@
     </script>
 </body>
 </html>
+
