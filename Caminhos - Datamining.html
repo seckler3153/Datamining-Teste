@@ -41,7 +41,25 @@
         .pasta-central {
             width: 140px;
             height: auto;
-            pointer-events: none;
+            cursor: pointer; /* Alterado para indicar que é clicável no mobile */
+            user-select: none;
+        }
+
+        /* AJUSTES MOBILE */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: repeat(3, 100px); /* Reduz o tamanho da grelha */
+                grid-gap: 10px;
+            }
+
+            svg {
+                width: 70px; /* Reduz o tamanho das setas */
+                height: 70px;
+            }
+
+            .pasta-central {
+                width: 90px; /* Reduz a imagem central */
+            }
         }
     </style>
 </head>
@@ -54,7 +72,7 @@
 
     <svg class="vazada" viewBox="0 0 100 100" onclick="toggleSeta(this)" style="fill: #00a0dd;"><path d="M20,50 L50,20 L80,50 L65,50 L65,80 L35,80 L35,50 Z" stroke="#000" stroke-width="5" transform="rotate(-90 50 50)"/></svg>
     
-    <img src="Ícone 10 - Pasta Vazia.png" alt="Pasta" class="pasta-central">
+    <img src="Ícone 10 - Pasta Vazia.png" alt="Pasta" class="pasta-central" onclick="toggleTodasMobile()">
     
     <svg class="vazada" viewBox="0 0 100 100" onclick="toggleSeta(this)" style="fill: #c40026;"><path d="M20,50 L50,20 L80,50 L65,50 L65,80 L35,80 L35,50 Z" stroke="#000" stroke-width="5" transform="rotate(90 50 50)"/></svg>
 
@@ -66,21 +84,32 @@
 <script>
     const todasSetas = document.querySelectorAll('svg');
 
-    // Função para alternar individualmente
     function toggleSeta(elemento) {
         elemento.classList.toggle('vazada');
     }
 
-    // Atalhos de teclado
+    // Nova função para o comportamento Mobile na imagem central
+    function toggleTodasMobile() {
+        // Verifica se é mobile (largura da tela)
+        if (window.innerWidth <= 768) {
+            const setasLigadas = Array.from(todasSetas).filter(seta => !seta.classList.contains('vazada'));
+            
+            if (setasLigadas.length > 0) {
+                // Se houver ao menos uma ligada, apaga todas
+                todasSetas.forEach(seta => seta.classList.add('vazada'));
+            } else {
+                // Se todas estiverem apagadas, liga todas
+                todasSetas.forEach(seta => seta.classList.remove('vazada'));
+            }
+        }
+    }
+
     window.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
-            // Ligar todas (remover classe vazada)
             todasSetas.forEach(seta => seta.classList.remove('vazada'));
         } 
         else if (event.code === 'Space') {
-            // Previne o scroll da página ao apertar espaço
             event.preventDefault(); 
-            // Apagar todas (adicionar classe vazada)
             todasSetas.forEach(seta => seta.classList.add('vazada'));
         }
     });
