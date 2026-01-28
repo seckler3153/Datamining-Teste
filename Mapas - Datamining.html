@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Mapas - Datamining</title>
     <link rel="icon" type="image/png" href="Ícone 11 - Datamine.png">
-    <style>
+<style>
     :root {
         --cor-esconder: #11806A;
     }
@@ -27,87 +27,86 @@
         gap: 20px;
     }
 
-    /* --- AJUSTE MOBILE SEM ALTERAR ORDEM --- */
+    /* --- CONTROLES MOBILE (OCULTOS NO DESKTOP) --- */
+    .mobile-controls, #modalInstrucoes {
+        display: none;
+    }
+
+    /* --- MODO MOBILE --- */
     @media (max-width: 850px) {
         body { padding: 10px; }
+        
         .layout-principal { 
             flex-direction: column; 
             align-items: center; 
         }
-        .apendice-regras, .apendice-botoes { 
-            width: 100% !important; 
-            max-width: 340px; /* Leve ajuste para acomodar a grid original */
+
+        /* Esconde o apêndice de regras original apenas no mobile */
+        .apendice-regras { 
+            display: none !important; 
         }
+
+        .apendice-botoes { 
+            width: 100% !important; 
+            max-width: 340px; 
+        }
+
         .mapa-wrapper {
             max-width: 90vw !important;
         }
-        /* Mantém a estrutura de 9 linhas e 4 colunas do desktop */
+
         .grid-componentes {
             grid-template-rows: repeat(9, 1fr) !important;
             grid-template-columns: repeat(4, 1fr) !important;
             grid-auto-flow: column !important;
         }
-		/* Dentro do @media (max-width: 850px) */
-		.apendice-regras { 
-			display: none !important; /* Esconde o painel original no mobile */
-		}
 
-		.mobile-controls {
-			display: flex;
-			gap: 10px;
-			width: 100%;
-			justify-content: center;
-			margin-top: 15px;
-		}
+        /* Ativa os botões exclusivos mobile */
+        .mobile-controls {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            justify-content: center;
+            margin-top: 15px;
+        }
 
-	@media (min-width: 851px) {
-		.mobile-controls { display: none; } /* Esconde os botões no desktop */
-		}
+        /* Estilo do Overlay (Box de Instruções) */
+        .overlay-instrucoes {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer; /* Clique fecha */
+        }
 
-		/* Estilo do Overlay de Instruções */
-		.overlay-instrucoes {
-			display: none;
-			position: fixed;
-			top: 0; left: 0;
-			width: 100%; height: 100%;
-			background: rgba(0,0,0,0.8);
-			z-index: 1000;
-			justify-content: center;
-			align-items: center;
-			cursor: pointer; /* Indica que clicar fora fecha */
-		}
+        .overlay-conteudo {
+            background: white;
+            padding: 20px;
+            border: 8px solid #000;
+            border-radius: 15px;
+            width: 85%;
+            max-height: 80vh; /* Altura aumentada conforme solicitado */
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        
+        .regras-texto-scroll {
+            overflow-y: auto;
+            flex-grow: 1;
+            padding-right: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
 
-		.overlay-conteudo {
-			background: white;
-			padding: 20px;
-			border: 8px solid #000;
-			border-radius: 15px;
-			width: 85%;
-			max-height: 60vh; /* Define uma altura menor que a tela */
-			display: flex;
-			flex-direction: column;
-			cursor: default;
-		}
-		
-		.regras-texto-scroll {
-			overflow-y: auto; /* Habilita o scroll vertical */
-			flex-grow: 1;
-			padding-right: 10px;
-			/* Suaviza o scroll no mobile */
-			-webkit-overflow-scrolling: touch;
-		}
-
-		/* Personalização da barra de rolagem para combinar com o estilo */
-		.regras-texto-scroll::-webkit-scrollbar {
-			width: 8px;
-		}
-		.regras-texto-scroll::-webkit-scrollbar-thumb {
-			background: #000;
-			border-radius: 4px;
-		}
+        /* Barra de rolagem personalizada */
+        .regras-texto-scroll::-webkit-scrollbar { width: 8px; }
+        .regras-texto-scroll::-webkit-scrollbar-thumb { background: #000; border-radius: 4px; }
     }
-    /* --------------------------------------- */
 
+    /* --- ESTILOS ORIGINAIS PRESERVADOS --- */
     .apendice-regras, .apendice-botoes {
         background-color: white;
         padding: 20px;
@@ -120,9 +119,7 @@
         box-sizing: border-box;
     }
 
-    .apendice-regras {
-        justify-content: space-between;
-    }
+    .apendice-regras { justify-content: space-between; }
 
     .regras-texto {
         font-size: 13px;
@@ -156,9 +153,7 @@
 
     .grid-container-master {
         display: grid;
-        grid-template-areas: 
-            ". topo"
-            "lateral mapa";
+        grid-template-areas: ". topo" "lateral mapa";
         grid-template-columns: 30px auto;
         grid-template-rows: 30px auto;
     }
@@ -169,7 +164,7 @@
     .coord-label {
         font-size: 14px;
         color: #000;
-        display: center;
+        display: flex;
         justify-content: center;
         align-items: center;
         flex: 1;
@@ -215,10 +210,7 @@
     }
 
     #camadaIconesBase, #camadaIconesSuperior, #camadaIconesUltra { 
-        position: absolute; 
-        top: 0; left: 0; 
-        width: 100%; height: 100%; 
-        pointer-events: none; 
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; 
     }
     #camadaIconesBase { z-index: 40; }
     #camadaIconesSuperior { z-index: 50; }
@@ -243,9 +235,7 @@
 
     .grid-cell.escondido { background-color: var(--cor-esconder); }
 
-    .apendice-botoes {
-        gap: 15px;
-    }
+    .apendice-botoes { gap: 15px; }
 
     .btn-nav {
         padding: 10px 2px;
@@ -350,14 +340,14 @@
 				<button class="btn-nav" style="background-color: #000; flex: 1;" onclick="toggleInstrucoes(true)">Instruções</button>
 				<button class="btn-nav btn-reset" style="margin-top: 0; flex: 1;" onclick="resetarGridAtual()">Resetar Mapa Atual</button>
 			</div>
-
+			
 			<div id="modalInstrucoes" class="overlay-instrucoes" onclick="toggleInstrucoes(false)">
-				<div class="overlay-conteudo" onclick="event.stopPropagation()">
+				<div class="overlay-conteudo">
 					<div class="regras-texto-scroll">
 						<div class="regras-texto" id="conteudoClone">
 							</div>
 					</div>
-					<button class="btn-nav" style="background-color: #000; width: 100%; margin-top: 20px;" onclick="toggleInstrucoes(false)">Fechar</button>
+					<button class="btn-nav" style="background-color: #000; width: 100%; margin-top: 15px;">Fechar</button>
 				</div>
 			</div>
         </div>
@@ -876,8 +866,7 @@
 			if (abrir) {
 				// Copia o texto do apêndice original para o modal
 				const original = document.querySelector('.apendice-regras .regras-texto').innerHTML;
-				const container = document.getElementById('conteudoClone');
-				container.innerHTML = original;
+				document.getElementById('conteudoClone').innerHTML = original;
 				modal.style.display = 'flex';
 				document.querySelector('.regras-texto-scroll').scrollTop = 0;
 			} else {
