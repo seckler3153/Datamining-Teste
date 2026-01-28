@@ -754,33 +754,58 @@
         }
 
         function posicionarIconeFixo(cell) {
-            const index = cell.dataset.index;
-            const centro = getCentro(cell);
-            let idCamada = (componenteSelecionado >= 19 && componenteSelecionado <= 27) ? 'camadaIconesSuperior' : 'camadaIconesBase';
-            const camada = document.getElementById(idCamada);
-            const antigo = camada.querySelector(`.icone-mapa[data-cell-id="${index}"]`);
-            if (antigo) antigo.remove();
-            const img = document.createElement('img');
-            img.src = `Componente (${componenteSelecionado}).png`;
-            img.className = 'icone-mapa';
-            img.dataset.cellId = index;
-            img.dataset.compId = componenteSelecionado;
-            const dim = configMapas[tamanhoAtual].dim;
-            const containerMapa = document.getElementById('containerMapa');
-            const size = (containerMapa.offsetWidth / dim) * 0.7;
-            img.style.width = size + "px";
-            img.style.left = centro.x + "px";
-            img.style.top = centro.y + "px";
-            cell.classList.add('escondido');
-            camada.appendChild(img);
-            historico.push({ tipo: 'dupla_acao', icone: img, quadrante: cell });
-            
-            // Nova lógica: não limpa se shift estiver pressionado
-            if (!shiftPressionado) {
-                componenteSelecionado = null;
-                document.querySelectorAll('.btn-componente').forEach(b => b.classList.remove('selecionado'));
-            }
-        }
+			const index = cell.dataset.index;
+			const centro = getCentro(cell);
+			const isMobile = window.innerWidth <= 850;
+    
+			// Determina a camada correta com base no componente selecionado
+			let idCamada = (componenteSelecionado >= 19 && componenteSelecionado <= 27) ? 'camadaIconesSuperior' : 'camadaIconesBase';
+			const camada = document.getElementById(idCamada);
+    
+			// Busca se já existe um ícone neste quadrante
+			const antigo = camada.querySelector(`.icone-mapa[data-cell-id="${index}"]`);
+
+			// NOVA LÓGICA MOBILE: Se for o mesmo componente, remove e encerra
+			if (isMobile && antigo && antigo.dataset.compId == componenteSelecionado) {
+				antigo.remove();
+				// Se não sobrar nenhum ícone (base ou superior), remove o fundo escondido
+				const temOutro = document.querySelector(`.icone-mapa[data-cell-id="${index}"]`);
+				if (!temOutro) cell.classList.remove('escondido');
+        
+				if (!shiftPressionado) {
+					componenteSelecionado = null;
+					document.querySelectorAll('.btn-componente').forEach(b => b.classList.remove('selecionado'));
+				}
+				return;
+			}
+
+			// Comportamento padrão: Substitui o ícone existente
+			if (antigo) antigo.remove();
+    
+			const img = document.createElement('img');
+			img.src = `Componente (${componenteSelecionado}).png`;
+			img.className = 'icone-mapa';
+			img.dataset.cellId = index;
+			img.dataset.compId = componenteSelecionado;
+    
+			const dim = configMapas[tamanhoAtual].dim;
+			const containerMapa = document.getElementById('containerMapa');
+			const size = (containerMapa.offsetWidth / dim) * 0.7;
+    
+			img.style.width = size + "px";
+			img.style.left = centro.x + "px";
+			img.style.top = centro.y + "px";
+    
+			cell.classList.add('escondido'); // Garante que o fundo fique colorido sob o ícone
+			camada.appendChild(img);
+    
+			historico.push({ tipo: 'dupla_acao', icone: img, quadrante: cell });
+    
+			if (!shiftPressionado) {
+				componenteSelecionado = null;
+				document.querySelectorAll('.btn-componente').forEach(b => b.classList.remove('selecionado'));
+			}
+		}
 
         function lidarMouseUp(e, cell) {
             if (e.button === 0 && criandoLinha && cellInicial && cellInicial !== cell) {
@@ -990,6 +1015,16 @@
 		// Atualize sua função lidarMouseDown para incluir esta nova lógica de interceptação
 		function lidarMouseDown(e, cell) {
 			// LÓGICA MOBILE DE CAMINHOS (Mantida conforme original)
+			const isMobile = window.innerWidth <= 850;
+
+			// LÓGICA MOBILE DE ESCONDER QUADRANTE (Apenas se nenhuma ferramenta estiver ativa)
+			if (isMobile && estadoCaminhoMobile === 0 && !modoMeepleMobile && !componenteSelecionado) {
+				cell.classList.toggle('escondido');
+				salvarAcao('esconder', cell);
+				return; // Interrompe para não disparar outras lógicas
+			}
+			
+			
 			if (estadoCaminhoMobile > 0) {
 				if (!primeiroCliqueCaminho) {
 					primeiroCliqueCaminho = cell;
