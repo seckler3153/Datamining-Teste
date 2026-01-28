@@ -100,6 +100,20 @@
             padding-right: 10px;
             -webkit-overflow-scrolling: touch;
         }
+		
+		.mobile-controls-row {
+			display: flex;
+			gap: 10px;
+			width: 100%;
+			justify-content: center;
+			margin-top: 10px;
+		}
+
+		.btn-nav.selecionado-mobile {
+			background-color: #ffd700 !important;
+			color: #000 !important;
+			border: 2px solid #ff4500;
+		}
 
         /* Barra de rolagem personalizada */
         .regras-texto-scroll::-webkit-scrollbar { width: 8px; }
@@ -336,7 +350,11 @@
                     <div id="camadaIconesUltra"></div>
                 </div>
             </div>
-			<div class="mobile-controls">
+			<div class="mobile-controls-row">
+				<button id="btnModoCaminho" class="btn-nav" style="background-color: #000; flex: 1;" onclick="alternarModoCaminho()">Caminhos</button>
+				<button class="btn-nav" style="background-color: #000; flex: 1;">?</button>
+			</div>
+			<div class="mobile-controls-row">
 				<button class="btn-nav" style="background-color: #000; flex: 1;" onclick="toggleInstrucoes(true)">Instruções</button>
 				<button class="btn-nav btn-reset" style="margin-top: 0; flex: 1;" onclick="resetarGridAtual()">Resetar Mapa Atual</button>
 			</div>
@@ -872,6 +890,52 @@
 			} else {
 				modal.style.display = 'none';
 			}
+		}
+		
+		let modoCaminhoMobile = false;
+		let primeiroCliqueCaminho = null;
+
+		function alternarModoCaminho() {
+			modoCaminhoMobile = !modoCaminhoMobile;
+			const btn = document.getElementById('btnModoCaminho');
+    
+			if (modoCaminhoMobile) {
+				btn.classList.add('selecionado-mobile');
+				// Deseleciona qualquer componente ativo para não conflitar
+				componenteSelecionado = null;
+				document.querySelectorAll('.btn-componente').forEach(b => b.classList.remove('selecionado'));
+			} else {
+				btn.classList.remove('selecionado-mobile');
+				primeiroCliqueCaminho = null;
+			}
+		}
+
+		// Modifique sua função lidarMouseDown existente para incluir esta trava no início:
+		function lidarMouseDown(e, cell) {
+			// Se estiver no modo caminho mobile, ignora as funções normais de ícones/esconder
+			if (modoCaminhoMobile) {
+				if (!primeiroCliqueCaminho) {
+					primeiroCliqueCaminho = cell;
+					cell.style.outline = "2px solid yellow"; // Feedback visual
+				} else {
+					const c1 = getCentro(primeiroCliqueCaminho);
+					const c2 = getCentro(cell);
+            
+					// "Aperta um e depois outro" cria o caminho "por fora" (como se fosse Shift)
+					criarLinhaFinal(c1, c2, true); 
+            
+					primeiroCliqueCaminho.style.outline = "";
+					primeiroCliqueCaminho = null;
+				}
+				return; // Trava o resto da função
+			}
+
+			// ... restante do seu código original lidarMouseDown ...
+			if (e.button === 0 && componenteSelecionado) {
+				posicionarIconeFixo(cell);
+				return;
+			}
+			// ...
 		}
     </script>
 </body>
