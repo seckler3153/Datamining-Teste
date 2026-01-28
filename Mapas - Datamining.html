@@ -28,8 +28,10 @@
     }
 
     /* --- CONTROLES MOBILE (OCULTOS NO DESKTOP) --- */
-    .mobile-controls, #modalInstrucoes {
-        display: none;
+    .mobile-controls, 
+	.mobile-controls-row, 
+	#modalInstrucoes {
+		display: none !important;
     }
 
     /* --- MODO MOBILE --- */
@@ -62,8 +64,9 @@
         }
 
         /* Ativa os botões exclusivos mobile */
-        .mobile-controls {
-            display: flex;
+        .mobile-controls, 
+		.mobile-controls-row {
+            display: flex !important;
             gap: 10px;
             width: 100%;
             justify-content: center;
@@ -151,6 +154,10 @@
 		/* Evita que o grid intercepte o toque no modo Meeple */
 		body.modo-meeple-ativo .grid-overlay {
 			pointer-events: none;
+		}
+		
+		#modalInstrucoes.ativo-mobile {
+			display: flex !important;
 		}
 
         /* Barra de rolagem personalizada */
@@ -923,10 +930,11 @@
 				// Copia o texto do apêndice original para o modal
 				const original = document.querySelector('.apendice-regras .regras-texto').innerHTML;
 				document.getElementById('conteudoClone').innerHTML = original;
-				modal.style.display = 'flex';
+        
+				modal.classList.add('ativo-mobile'); // Usa a classe para vencer o !important do CSS
 				document.querySelector('.regras-texto-scroll').scrollTop = 0;
 			} else {
-				modal.style.display = 'none';
+				modal.classList.remove('ativo-mobile');
 			}
 		}
 		
