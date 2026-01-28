@@ -211,6 +211,63 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+		
+		#btn-abrir-sorteio {
+			display: none;
+			position: absolute;
+			top: 15px;
+			right: 15px;
+			z-index: 10;
+			padding: 10px 15px;
+			background-color: #11806A;
+			color: white;
+			border: 2px solid #000;
+			border-radius: 8px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		/* Responsividade (Mobile) */
+		@media (max-width: 850px) {
+			body {
+				padding: 10px;
+				flex-direction: column;
+			}
+
+			.quadro-regras-completo {
+				width: 100%;
+				padding: 20px;
+				box-sizing: border-box;
+			}
+
+			/* Esconde o apêndice fixo lateral */
+			.apendice-sorteio {
+				display: none; 
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				width: 90%;
+				max-width: 350px;
+				z-index: 10000;
+				box-shadow: 0 0 0 1000px rgba(0,0,0,0.7); /* Efeito de escurecer fundo */
+			}
+
+			/* Mostra o apêndice apenas quando a classe 'aberto' for adicionada via JS */
+			.apendice-sorteio.aberto {
+				display: flex;
+			}
+
+			/* Mostra o botão de gatilho no mobile */
+			#btn-abrir-sorteio {
+				display: block;
+			}
+
+			h1 {
+				font-size: 20px;
+				margin-top: 40px; /* Espaço para o botão */
+			}
+		}
     </style>
 </head>
 <body>
@@ -220,6 +277,7 @@
     </div>
 
     <div class="quadro-regras-completo">
+		<button id="btn-abrir-sorteio" onclick="toggleSorteio()">Sorteios</button>
         <h1 id="titulo-principal">Recursos do Modo Competitivo</h1>
 
         <div id="conteudo-pvp">
@@ -604,18 +662,36 @@
                 if(el) el.innerText = '-';
             });
         }
+		
+		function toggleSorteio() {
+			const apendice = document.querySelector('.apendice-sorteio');
+			apendice.classList.toggle('aberto');
+		}
+		
+		window.onclick = function(event) {
+			const apendice = document.querySelector('.apendice-sorteio');
+			const btn = document.getElementById('btn-abrir-sorteio');
+			// Se o clique não foi no apêndice nem no botão de abrir, e ele estiver aberto:
+			if (!apendice.contains(event.target) && event.target !== btn && apendice.classList.contains('aberto')) {
+				apendice.classList.remove('aberto');
+			}
+		}
 
         function irPara(idBase) {
             const elemento = document.getElementById(`${idBase}-${modoAtual}`);
-            if (elemento) {
-                elemento.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
+			if (elemento) {
+				elemento.scrollIntoView({ behavior: 'smooth' });
+				// Fecha o pop-up se estiver no mobile
+				document.querySelector('.apendice-sorteio').classList.remove('aberto');
+			}
+		}
 
         function trocarModoManual() {
-            modoAtual = modoAtual === 'pvp' ? 'coop' : 'pvp';
-            alternarModo();
-        }
+			modoAtual = modoAtual === 'pvp' ? 'coop' : 'pvp';
+			alternarModo();
+			// Fecha o pop-up se estiver no mobile
+			document.querySelector('.apendice-sorteio').classList.remove('aberto');
+		}
 
         function alternarModo() {
             const titulo = document.getElementById('titulo-principal');
