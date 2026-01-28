@@ -21,6 +21,7 @@
             grid-gap: 20px;
             justify-items: center;
             align-items: center;
+            transition: transform 0.3s ease; /* Suaviza a transição se a tela for redimensionada */
         }
 
         /* Estilo base das setas */
@@ -41,24 +42,26 @@
         .pasta-central {
             width: 140px;
             height: auto;
-            cursor: pointer; /* Alterado para indicar que é clicável no mobile */
+            cursor: pointer;
             user-select: none;
         }
 
         /* AJUSTES MOBILE */
         @media (max-width: 768px) {
             .container {
-                grid-template-columns: repeat(3, 100px); /* Reduz o tamanho da grelha */
+                grid-template-columns: repeat(3, 100px);
                 grid-gap: 10px;
+                /* MODIFICAÇÃO SOLICITADA: Scale de 40% maior (1.4) */
+                transform: scale(1.4);
             }
 
             svg {
-                width: 70px; /* Reduz o tamanho das setas */
+                width: 70px;
                 height: 70px;
             }
 
             .pasta-central {
-                width: 90px; /* Reduz a imagem central */
+                width: 90px;
             }
         }
     </style>
@@ -88,17 +91,13 @@
         elemento.classList.toggle('vazada');
     }
 
-    // Nova função para o comportamento Mobile na imagem central
     function toggleTodasMobile() {
-        // Verifica se é mobile (largura da tela)
         if (window.innerWidth <= 768) {
             const setasLigadas = Array.from(todasSetas).filter(seta => !seta.classList.contains('vazada'));
             
             if (setasLigadas.length > 0) {
-                // Se houver ao menos uma ligada, apaga todas
                 todasSetas.forEach(seta => seta.classList.add('vazada'));
             } else {
-                // Se todas estiverem apagadas, liga todas
                 todasSetas.forEach(seta => seta.classList.remove('vazada'));
             }
         }
