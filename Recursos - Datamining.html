@@ -97,7 +97,7 @@
 
         .btn-acao {
             width: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 5px !important;
             background-color: #d9534f;
         }
 
@@ -225,6 +225,20 @@
 			border-radius: 8px;
 			font-weight: bold;
 			cursor: pointer;
+		}
+		
+		.btn-acao.btn-nav-modo {
+			background-color: #11806A;
+			margin-bottom: 5px !important; /* Espaço extra entre ele e o Resetar */
+		}
+
+		.btn-acao.btn-nav-modo:hover {
+			background-color: #0e6b59;
+		}
+
+		/* Opcional: Ajuste para os botões de navegação ficarem simétricos */
+		.nav-container {
+			grid-template-columns: repeat(3, 1fr); /* Mantém 3 colunas para os 6 botões */
 		}
 
 		/* Responsividade (Mobile) */
@@ -446,7 +460,14 @@
                     <div class="subtitulo-dif">36 - Arquivo Vital</div>
                     <img src="Recursos PvP (36).png" class="imagem-regra" onclick="expandirImagem(this.src)">
                 </div>
-            </div>
+            </div> <hr style="border: 0; border-top: 5px dashed #000; margin-bottom: 60px;">
+			<div id="cat-teclas-pvp" class="categoria-bloco">
+				<div class="titulo-secao">Recursos Teclas</div>
+				<div class="secao-dificuldade">
+					<div class="subtitulo-dif">01 - Home</div>
+					<img src="Recursos PvP (2).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+				</div>
+			</div>
         </div>
 
         <div id="conteudo-coop" class="hidden">
@@ -615,13 +636,21 @@
                     <div class="subtitulo-dif">36 - Arquivo Vital</div>
                     <img src="Recursos Coop (36).png" class="imagem-regra" onclick="expandirImagem(this.src)">
                 </div>
-            </div>
+            </div> <hr style="border: 0; border-top: 5px dashed #000; margin-bottom: 60px;">
+			<div id="cat-teclas-coop" class="categoria-bloco">
+				<div class="titulo-secao">Recursos Teclas</div>
+				<div class="secao-dificuldade">
+					<div class="subtitulo-dif">01 - Home</div>
+					<img src="Recursos Coop (2).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+				</div>
+			</div>
         </div>
     </div>
 
     <div class="apendice-sorteio">
         <h2>Recursos Aleatórios</h2>
         
+		<button class="btn-acao btn-nav-modo" onclick="trocarModoManual()">Mudar Modo</button>
         <button class="btn-acao" onclick="resetarTudo()">Resetar Tudo</button>
 
         <div class="grid-sorteios">
@@ -629,35 +658,35 @@
                 <div class="linha-sorteio" style="margin-bottom: 5px;">
                     <span class="label-sorteio">C:</span>
                     <span id="res-C" class="resultado-sorteio">-</span>
-                    <button class="btn-sortear" onclick="sortear('C', 1, 12)">Sortear</button>
+                    <button class="btn-sortear" onclick="sortear('C')">Sortear</button>
                 </div>
                 <div class="linha-sorteio" style="margin-bottom: 5px;">
                     <span class="label-sorteio">I:</span>
                     <span id="res-I" class="resultado-sorteio">-</span>
-                    <button class="btn-sortear" onclick="sortear('I', 13, 22)">Sortear</button>
+                    <button class="btn-sortear" onclick="sortear('I')">Sortear</button>
                 </div>
                 <div class="linha-sorteio">
                     <span class="label-sorteio">R:</span>
                     <span id="res-R" class="resultado-sorteio">-</span>
-                    <button class="btn-sortear" onclick="sortear('R', 23, 30)">Sortear</button>
+                    <button class="btn-sortear" onclick="sortear('R')">Sortear</button>
                 </div>
             </div>
 
             <div class="coluna-sorteio">
                 <div class="linha-sorteio" style="margin-bottom: 5px;">
-                    <span class="label-sorteio">T:</span>
-                    <span id="res-T" class="resultado-sorteio">-</span>
-                    <button class="btn-sortear" onclick="sortear('T', 1, 7)">Sortear</button>
-                </div>
-                <div class="linha-sorteio" style="margin-bottom: 5px;">
                     <span class="label-sorteio">FD:</span>
                     <span id="res-FD" class="resultado-sorteio">-</span>
-                    <button class="btn-sortear" onclick="sortear('FD', 1, 35)">Sortear</button>
+                    <button class="btn-sortear" onclick="sortear('FD')">Sortear</button>
                 </div>
-                <div class="linha-sorteio">
+                <div class="linha-sorteio" style="margin-bottom: 5px;">
                     <span class="label-sorteio">A:</span>
                     <span id="res-A" class="resultado-sorteio">-</span>
-                    <button class="btn-sortear" onclick="sortear('A', 1, 36)">Sortear</button>
+                    <button class="btn-sortear" onclick="sortear('A')">Sortear</button>
+                </div>
+				<div class="linha-sorteio">
+                    <span class="label-sorteio">T:</span>
+                    <span id="res-T" class="resultado-sorteio">-</span>
+                    <button class="btn-sortear" onclick="sortear('T')">Sortear</button>
                 </div>
             </div>
         </div>
@@ -668,20 +697,40 @@
             <button class="btn-nav" onclick="irPara('cat-raros')">Raros</button>
             <button class="btn-nav" onclick="irPara('cat-fd')">F. Desconhecidas</button>
             <button class="btn-nav" onclick="irPara('cat-unico')">Único</button>
-            <button class="btn-nav btn-nav-modo" onclick="trocarModoManual()">Mudar Modo</button>
+			<button class="btn-nav" onclick="irPara('cat-teclas')">Teclas</button>
         </div>
     </div>
 
     <script>
         let modoAtual = 'pvp';
+		
+		const intervalos = {
+            pvp: {
+                C: [1, 12],
+                I: [13, 22],
+                R: [23, 30],
+                FD: [31, 35],
+                A: [1, 36],
+				T: [1, 1]
+            },
+            coop: {
+                C: [1, 12],
+                I: [13, 22],
+                R: [23, 32],
+                FD: [31, 35],
+                A: [1, 36],
+				T: [1, 1]
+            }
+        };
 
-        function sortear(tipo, min, max) {
+        function sortear(tipo) {
+            const [min, max] = intervalos[modoAtual][tipo];
             const resultado = Math.floor(Math.random() * (max - min + 1)) + min;
             document.getElementById(`res-${tipo}`).innerText = resultado;
         }
 
         function resetarTudo() {
-            ['C', 'I', 'R', 'T', 'FD', 'A'].forEach(tipo => {
+            ['C', 'I', 'R', 'FD', 'A', 'T'].forEach(tipo => {
                 const el = document.getElementById(`res-${tipo}`);
                 if(el) el.innerText = '-';
             });
@@ -701,38 +750,74 @@
 			}
 		}
 
-        function irPara(idBase) {
-            const elemento = document.getElementById(`${idBase}-${modoAtual}`);
-			if (elemento) {
-				elemento.scrollIntoView({ behavior: 'smooth' });
-				// Fecha o pop-up se estiver no mobile
+		function irPara(idBase) {
+			const mapaSorteio = {
+				'cat-comuns': 'res-C',
+				'cat-incomuns': 'res-I',
+				'cat-raros': 'res-R',
+				'cat-fd': 'res-FD',
+				'cat-teclas': 'res-T'
+			};
+
+			const idResultado = mapaSorteio[idBase];
+			const valorSorteado = document.getElementById(idResultado)?.innerText;
+
+			if (valorSorteado && valorSorteado !== '-') {
+				const numeroFormatado = valorSorteado.padStart(2, '0');
+				const secaoPai = document.getElementById(`${idBase}-${modoAtual}`);
+        
+				// Seleciona todos os blocos de dificuldade (que contêm título + imagem)
+				const blocos = secaoPai.querySelectorAll('.secao-dificuldade');
+        
+				let alvo = null;
+				blocos.forEach(bloco => {
+					const subtitulo = bloco.querySelector('.subtitulo-dif');
+					// Verifica se o texto do subtítulo começa com o número sorteado
+					if (subtitulo && subtitulo.innerText.startsWith(numeroFormatado)) {
+						alvo = bloco;
+					}
+				});
+
+				if (alvo) {
+					// Rola a página para centralizar o bloco inteiro (título + imagem)
+					alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+					document.querySelector('.apendice-sorteio').classList.remove('aberto');
+					return;
+				}
+			}
+
+			// Fallback: vai para o topo da categoria se não houver número
+			const elementoRaiz = document.getElementById(`${idBase}-${modoAtual}`);
+			if (elementoRaiz) {
+				elementoRaiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
 				document.querySelector('.apendice-sorteio').classList.remove('aberto');
 			}
-		}
-
-        function trocarModoManual() {
-			modoAtual = modoAtual === 'pvp' ? 'coop' : 'pvp';
-			alternarModo();
-			// Fecha o pop-up se estiver no mobile
-			document.querySelector('.apendice-sorteio').classList.remove('aberto');
 		}
 
         function alternarModo() {
             const titulo = document.getElementById('titulo-principal');
             const pvp = document.getElementById('conteudo-pvp');
-            const coop = document.getElementById('conteudo-coop');
+			const coop = document.getElementById('conteudo-coop');
 
             if (modoAtual === 'pvp') {
-                titulo.innerText = "Recursos do Modo Competitivo";
-                pvp.classList.remove('hidden');
-                coop.classList.add('hidden');
-            } else {
-                titulo.innerText = "Recursos do Modo Cooperativo";
-                pvp.classList.add('hidden');
-                coop.classList.remove('hidden');
-            }
-            window.scrollTo(0, 0);
-        }
+				titulo.innerText = "Recursos do Modo Competitivo";
+				pvp.classList.remove('hidden');
+				coop.classList.add('hidden');
+			} else {
+				titulo.innerText = "Recursos do Modo Cooperativo";
+				pvp.classList.add('hidden');
+				coop.classList.remove('hidden');
+			}
+			document.querySelector('.apendice-sorteio').classList.remove('aberto');
+			window.scrollTo(0, 0);
+		}
+		
+		function trocarModoManual() {
+			// Inverte o modo atual
+			modoAtual = (modoAtual === 'pvp') ? 'coop' : 'pvp';
+			// Chama a função visual de alternância
+			alternarModo();
+		}
 
         function expandirImagem(src) {
             const overlay = document.getElementById('overlay-imagem');
