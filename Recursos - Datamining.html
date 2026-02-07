@@ -756,7 +756,8 @@
 				'cat-incomuns': 'res-I',
 				'cat-raros': 'res-R',
 				'cat-fd': 'res-FD',
-				'cat-teclas': 'res-T'
+				'cat-teclas': 'res-T',
+				'cat-unico': 'res-A'
 			};
 
 			const idResultado = mapaSorteio[idBase];
@@ -764,16 +765,25 @@
 
 			if (valorSorteado && valorSorteado !== '-') {
 				const numeroFormatado = valorSorteado.padStart(2, '0');
-				const secaoPai = document.getElementById(`${idBase}-${modoAtual}`);
         
-				// Seleciona todos os blocos de dificuldade (que contêm título + imagem)
-				const blocos = secaoPai.querySelectorAll('.secao-dificuldade');
-        
+				// Se for o botão Único (A), buscamos em TODO o conteúdo (exceto teclas)
+				// Se for outro botão, buscamos apenas na seção pai específica
+				let containerBusca;
+				if (idBase === 'cat-unico') {
+					containerBusca = document.getElementById(`conteudo-${modoAtual}`);
+				} else {
+					containerBusca = document.getElementById(`${idBase}-${modoAtual}`);
+				}
+
+				const blocos = containerBusca.querySelectorAll('.secao-dificuldade');
 				let alvo = null;
+
 				blocos.forEach(bloco => {
 					const subtitulo = bloco.querySelector('.subtitulo-dif');
-					// Verifica se o texto do subtítulo começa com o número sorteado
-					if (subtitulo && subtitulo.innerText.startsWith(numeroFormatado)) {
+					// Ignora a seção de teclas na busca global do botão "A"
+					const estaNasTeclas = bloco.closest('.categoria-bloco').id.includes('teclas');
+            
+					if (subtitulo && subtitulo.innerText.startsWith(numeroFormatado) && !estaNasTeclas) {
 						alvo = bloco;
 					}
 				});
@@ -809,6 +819,7 @@
 				coop.classList.remove('hidden');
 			}
 			document.querySelector('.apendice-sorteio').classList.remove('aberto');
+			resetarTudo();
 			window.scrollTo(0, 0);
 		}
 		
