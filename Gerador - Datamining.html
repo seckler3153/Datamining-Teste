@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerador de Mapas - Datamining</title>
+    <link rel="icon" type="image/png" href="Ícone 11 - Datamine.png">
+    <style>
+        :root {
+            --bg-color: #11806A;
+            --window-bg: #ffffff;
+            --accent-color: #11806A;
+            --border-main: 6px solid #000;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .painel-controle {
+            background-color: var(--window-bg);
+            border: var(--border-main);
+            border-radius: 15px;
+            padding: 25px;
+            width: 900px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        h1 { text-align: center; text-transform: uppercase; margin-top: 0; text-decoration: underline; font-size: 24px;}
+
+        .opcoes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .seletor-item {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .seletor-item.full-width { grid-column: span 2; }
+
+        .label-seletor {
+            display: block; font-weight: bold; margin-bottom: 8px; font-size: 11px; 
+            text-align: center; text-transform: uppercase;
+        }
+
+        .button-grid {
+            display: grid; grid-auto-columns: 1fr; grid-auto-flow: column; gap: 4px; width: 100%;
+        }
+
+        .color-grid {
+            display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px;
+        }
+
+        .btn-sel {
+            padding: 8px 2px; font-family: Arial, sans-serif; font-size: 11px;
+            font-weight: bold; cursor: pointer; border: 2px solid #000;
+            background: #fff; color: #000; text-transform: uppercase; transition: 0.2s;
+        }
+
+        .btn-sel:hover { background: #eee; }
+        .btn-sel.active { background: var(--accent-color); color: white; }
+
+        .btn-color.active[data-color="Vermelho"] { background-color: #c40026; color: white; }
+        .btn-color.active[data-color="Laranja"]  { background-color: #ec9800; color: black; }
+        .btn-color.active[data-color="Amarelo"]  { background-color: #ffeb00; color: black; }
+        .btn-color.active[data-color="Verde"]    { background-color: #4da619; color: black; }
+        .btn-color.active[data-color="Ciano"]    { background-color: #00a0dd; color: black; }
+        .btn-color.active[data-color="Azul"]     { background-color: #00468b; color: white; }
+        .btn-color.active[data-color="Roxo"]     { background-color: #6c005f; color: white; }
+        .btn-color.active[data-color="Magenta"]  { background-color: #c50067; color: white; }
+
+        .btn-gerar {
+            width: 100%; padding: 15px; background-color: #000; color: #fff;
+            border: none; border-radius: 8px; cursor: pointer; font-weight: bold;
+            font-size: 18px; text-transform: uppercase; margin-top: 10px;
+        }
+
+        #container-mapa {
+            position: relative; background-color: #ffffff; border: var(--border-main);
+            border-radius: 12px; display: none; margin-top: 20px; padding: 20px; 
+        }
+
+        .grid-mestre { display: grid; margin: 0 auto; background-color: #fff; position: relative; z-index: 0; }
+
+        #camada-caminhos { position: absolute; z-index: 1; pointer-events: none; }
+        
+        .camada-icones { display: grid; position: absolute; z-index: 2; pointer-events: none; }
+
+        .celula, .celula-icone {
+            width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; box-sizing: border-box;
+        }
+
+        .coordenada { color: #000; font-weight: bold; font-size: 18px; }
+        .celula-jogo { background-color: #11806A; border: 1px solid rgba(255,255,255,0.2); }
+        .pasta-img { width: 70%; height: 70%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); }
+		
+		@media (max-width: 768px) {
+            body { padding: 10px; }
+            
+            .painel-controle { 
+                padding: 15px; 
+                border-width: 4px;
+            }
+
+            h1 { font-size: 18px; }
+
+            .opcoes-grid {
+                grid-template-columns: 1fr; /* Coluna única no mobile */
+                gap: 10px;
+            }
+
+            .seletor-item.full-width { grid-column: span 1; }
+
+            .color-grid {
+                grid-template-columns: repeat(4, 1fr); /* 4 cores por linha no mobile */
+            }
+
+            .btn-gerar { font-size: 14px; padding: 12px; }
+
+            #container-mapa {
+                padding: 10px;
+                border-width: 4px;
+            }
+            
+            /* Ajuste para o mapa não quebrar o layout */
+            .celula, .celula-icone {
+                width: 45px; height: 45px;
+            }
+            .coordenada { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="painel-controle">
+    <h1>Gerador de Mapa Estratégico</h1>
+    <div class="opcoes-grid">
+        <div class="seletor-item">
+            <label class="label-seletor">Modo de Jogo</label>
+            <div class="button-grid" id="grid-modo">
+                <button class="btn-sel active" onclick="setModo('pvp')">PvP</button>
+                <button class="btn-sel" onclick="setModo('coop')">Coop</button>
+            </div>
+        </div>
+        <div class="seletor-item">
+            <label class="label-seletor">Dificuldade</label>
+            <div class="button-grid" id="grid-dificuldade"></div>
+        </div>
+        <div class="seletor-item full-width">
+            <label class="label-seletor">Cores Ativas</label>
+            <div class="color-grid" id="grid-cores">
+                <button class="btn-sel btn-color" data-color="Vermelho" onclick="toggleCor(this)">Vermelho</button>
+                <button class="btn-sel btn-color" data-color="Laranja" onclick="toggleCor(this)">Laranja</button>
+                <button class="btn-sel btn-color" data-color="Amarelo" onclick="toggleCor(this)">Amarelo</button>
+                <button class="btn-sel btn-color" data-color="Verde" onclick="toggleCor(this)">Verde</button>
+                <button class="btn-sel btn-color" data-color="Ciano" onclick="toggleCor(this)">Ciano</button>
+                <button class="btn-sel btn-color" data-color="Azul" onclick="toggleCor(this)">Azul</button>
+                <button class="btn-sel btn-color" data-color="Roxo" onclick="toggleCor(this)">Roxo</button>
+                <button class="btn-sel btn-color" data-color="Magenta" onclick="toggleCor(this)">Magenta</button>
+            </div>
+        </div>
+    </div>
+    <button class="btn-gerar" onclick="gerarMapa()">Inicializar Geração de Diretórios</button>
+</div>
+
+<div id="container-mapa">
+    <div id="grid" class="grid-mestre"></div>
+</div>
+
+<script>
+    let modoAtual = 'pvp';
+    let dificuldadeAtual = 'normal';
+    let coresSelecionadas = [];
+    const MAPA_CORES = { "Vermelho": 10, "Laranja": 11, "Amarelo": 12, "Verde": 13, "Ciano": 14, "Azul": 15, "Roxo": 16, "Magenta": 17 };
+    const LETRAS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    const CONFIG = {
+        "pvp": {
+            "muito-facil": { tamanho: 5, seguras: ["A1", "A3", "A5", "C1", "C5", "E1", "E3", "E5"], c7: [0, 0], c9: [0, 0], vazio: 0 },
+            "facil": { tamanho: 7, seguras: ["B2", "B4", "B6", "D2", "D6", "F2", "F4", "F6"], c7: [1, 1], c9: [0, 1], vazio: 0.33 },
+            "normal": { tamanho: 9, seguras: ["B2", "B5", "B8", "E2", "E8", "H2", "H5", "H8"], c7: [2, 2], c9: [1, 3], vazio: 0.33 },
+            "dificil": { tamanho: 12, seguras: null, c7: [3, 3], c9: [2, 4], vazio: 0.33 },
+            "extremo": { tamanho: 15, seguras: null, c7: [5, 5], c9: [4, 6], vazio: 0.33 }
+        },
+        "coop": {
+            "facil": { tamanho: 9, seguras: ["B2", "B5", "B8", "E2", "E8", "H2", "H5", "H8"], c7: [2, 2], c9: [1, 3], vazio: 0.33 },
+            "normal": { tamanho: 12, seguras: ["B2", "B6", "B11", "F11", "G2", "K2", "K7", "K11"], c7: [3, 3], c9: [2, 5], vazio: 0.33 },
+            "dificil": { tamanho: 15, seguras: null, c7: [5, 5], c9: [4, 7], vazio: 0.33 }
+        }
+    };
+
+    window.onload = () => renderizarDificuldades();
+    function setModo(val) { modoAtual = val; atualizarVisualBotoes('grid-modo', val); renderizarDificuldades(); }
+    function renderizarDificuldades() {
+        const gridDif = document.getElementById('grid-dificuldade');
+        gridDif.innerHTML = '';
+        const lista = Object.keys(CONFIG[modoAtual]);
+        lista.forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = `btn-sel ${dificuldadeAtual === key ? 'active' : ''}`;
+            const labels = { "muito-facil": "M. Fácil", "facil": "Fácil", "normal": "Normal", "dificil": "Difícil", "extremo": "Extr." };
+            btn.innerText = labels[key];
+            btn.onclick = () => { dificuldadeAtual = key; renderizarDificuldades(); };
+            gridDif.appendChild(btn);
+        });
+    }
+    function toggleCor(btn) {
+        const cor = btn.getAttribute('data-color');
+        btn.classList.toggle('active');
+        if (btn.classList.contains('active')) coresSelecionadas.push(cor);
+        else coresSelecionadas = coresSelecionadas.filter(c => c !== cor);
+    }
+    function atualizarVisualBotoes(containerId, value) {
+        const btns = document.getElementById(containerId).querySelectorAll('.btn-sel');
+        btns.forEach(btn => {
+            if(btn.getAttribute('onclick').includes(`'${value}'`)) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+    }
+
+    function desenharCaminhos(tamanho) {
+        const canvas = document.getElementById('camada-caminhos');
+        const ctx = canvas.getContext('2d');
+        const TAM = 60, OFFSET = 60;
+        canvas.width = (tamanho + 1) * TAM;
+        canvas.height = (tamanho + 1) * TAM;
+
+        const eZonaSegura = (src) => {
+			return src.includes("Componente%20(1).png") || 
+				   src.includes("Componente%20(10)") || src.includes("Componente%20(11)") || 
+				   src.includes("Componente%20(12)") || src.includes("Componente%20(13)") || 
+				   src.includes("Componente%20(14)") || src.includes("Componente%20(15)") || 
+				   src.includes("Componente%20(16)") || src.includes("Componente%20(17)");
+		};
+
+        const eComponenteEspecial = (src) => src.includes("Componente%20(7)") || src.includes("Componente%20(8)") || src.includes("Componente%20(9)");
+
+        function realizarDesenho() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 9;
+            ctx.globalAlpha = 0.6;
+            ctx.lineCap = "round";
+
+            let pastas = [];
+            for(let r=0; r<tamanho; r++) {
+                for(let c=0; c<tamanho; c++) {
+                    let slot = document.getElementById(`slot-icon-${r}-${c}`);
+                    let cell = document.getElementById(`cell-${r}-${c}`);
+                    if(slot?.innerHTML !== '' && cell?.getAttribute('data-tipo') !== 'vazio') {
+                        let src = slot.querySelector('img').src;
+                        let rand = Math.random();
+                        let meta;
+
+                        // REGRA: Componente 8 tem sempre o mínimo
+                        if (src.includes("Componente%20(8)")) {
+                            // Se for PvP Muito Fácil, a meta é 1. Senão, é 3.
+                            meta = (modoAtual === 'pvp' && dificuldadeAtual === 'muito-facil') ? 1 : 3;
+                        } else {
+                            // Probabilidade normal para as outras
+                            meta = rand < 0.40 ? 3 : (rand < 0.90 ? 4 : (rand < 0.98 ? 5 : 6));
+                        }
+
+                        pastas.push({ r, c, tipo: src, conexoes: 0, vizinhos: [], meta: meta });
+                    }
+                }
+            }
+
+            const encontrarMaisProximo = (rA, cA) => {
+                return pastas.reduce((prev, curr) => {
+                    let dCurr = Math.hypot(curr.r - rA, curr.c - cA);
+                    let dPrev = Math.hypot(prev.r - rA, prev.c - cA);
+                    return dCurr < dPrev ? curr : prev;
+                });
+            };
+			
+			function buscarPastaNoVetor(rInicial, cInicial, dr, dc, tamanho) {
+				let r = rInicial;
+				let c = cInicial;
+				
+				// Percorre o mapa dentro dos limites
+				while (r >= 0 && r < tamanho && c >= 0 && c < tamanho) {
+					let slot = document.getElementById(`slot-icon-${r}-${c}`);
+					let cell = document.getElementById(`cell-${r}-${c}`);
+					
+					// Se encontrar uma pasta válida (não vazia)
+					if (slot?.innerHTML !== '' && cell?.getAttribute('data-tipo') !== 'vazio') {
+						return { r, c };
+					}
+					r += dr;
+					c += dc;
+				}
+				return null; // Não encontrou pasta nessa linha
+			}
+
+			function desenharConexaoExterna(p1, p2, tipo, tamanho) {
+				if (!p1 || !p2) return;
+				
+				const slot1 = document.getElementById(`slot-icon-${p1.r}-${p1.c}`);
+				const slot2 = document.getElementById(`slot-icon-${p2.r}-${p2.c}`);
+				if (eZonaSegura(slot1.querySelector('img').src) && eZonaSegura(slot2.querySelector('img').src)) {
+					return; 
+				}
+				const x1 = p1.c * TAM + OFFSET + 30;
+				const y1 = p1.r * TAM + OFFSET + 30;
+				const x2 = p2.c * TAM + OFFSET + 30;
+				const y2 = p2.r * TAM + OFFSET + 30;
+				const ext = -5; 
+
+				ctx.beginPath();
+				if (tipo === 'diagonal-principal') {
+					let distBorda1 = Math.min(p1.r, p1.c) + 0.5;
+					ctx.moveTo(x1, y1);
+					ctx.lineTo(x1 - (distBorda1 * TAM) - ext, y1 - (distBorda1 * TAM) - ext);
+					let distBorda2 = (tamanho - 1 - Math.max(p2.r, p2.c)) + 0.5;
+					ctx.moveTo(x2, y2);
+					ctx.lineTo(x2 + (distBorda2 * TAM) + ext, y2 + (distBorda2 * TAM) + ext);
+				} 
+				else if (tipo === 'diagonal-inversa') {
+					let distBorda1 = Math.min(p1.r, (tamanho - 1 - p1.c)) + 0.5;
+					ctx.moveTo(x1, y1);
+					ctx.lineTo(x1 + (distBorda1 * TAM) + ext, y1 - (distBorda1 * TAM) - ext);
+					let distBorda2 = Math.min((tamanho - 1 - p2.r), p2.c) + 0.5;
+					ctx.moveTo(x2, y2);
+					ctx.lineTo(x2 - (distBorda2 * TAM) - ext, y2 + (distBorda2 * TAM) + ext);
+				} 
+				else if (tipo === 'vertical') {
+					ctx.moveTo(x1, y1); ctx.lineTo(x1, OFFSET - ext);
+					ctx.moveTo(x2, y2); ctx.lineTo(x2, (tamanho * TAM) + OFFSET + ext);
+				}
+				else if (tipo === 'horizontal') {
+					ctx.moveTo(x1, y1); ctx.lineTo(OFFSET - ext, y1);
+					ctx.moveTo(x2, y2); ctx.lineTo((tamanho * TAM) + OFFSET + ext, y2);
+				}
+				ctx.stroke();
+    
+				// Atualiza contadores para o algoritmo de satisfação
+				const pasta1 = pastas.find(p => p.r === p1.r && p.c === p1.c);
+				const pasta2 = pastas.find(p => p.r === p2.r && p.c === p2.c);
+				if(pasta1 && pasta2) {
+					pasta1.conexoes++; pasta2.conexoes++;
+					pasta1.vizinhos.push(pasta2); pasta2.vizinhos.push(pasta1);
+				}
+			}
+
+			// --- APLICAÇÃO DENTRO DO IF DE DIFICULDADE ---
+			// Dentro de desenharCaminhos, na seção de conexões externas:
+			// --- LÓGICA DE WRAP-AROUND DINÂMICO ---
+			if (dificuldadeAtual !== 'muito-facil' && dificuldadeAtual !== 'facil') {
+				
+				// 1. DIAGONAIS OBRIGATÓRIAS (A1 -> Fim e Inversa)
+				// Busca a pasta mais próxima do canto A1 e a mais próxima do canto oposto
+				desenharConexaoExterna(
+					buscarPastaNoVetor(0, 0, 1, 1, tamanho), 
+					buscarPastaNoVetor(tamanho-1, tamanho-1, -1, -1, tamanho), 
+					'diagonal-principal', tamanho
+				);
+				// Busca a pasta no topo-direito e na base-esquerda
+				desenharConexaoExterna(
+					buscarPastaNoVetor(0, tamanho-1, 1, -1, tamanho), 
+					buscarPastaNoVetor(tamanho-1, 0, -1, 1, tamanho), 
+					'diagonal-inversa', tamanho
+				);
+
+				// 2. CONEXÕES LATERAIS E VERTICAIS ALEATÓRIAS
+				let qtdMinMax;
+				// Define as regras de quantidade por dificuldade
+				if (modoAtual === 'pvp' && dificuldadeAtual === 'normal' || modoAtual === 'coop' && dificuldadeAtual === 'facil') {
+					qtdMinMax = { v: [0, 1], h: [0, 1] }; // Pode ou não ter E1-E9 ou A5-I5
+				} else if (modoAtual === 'pvp' && dificuldadeAtual === 'dificil' || modoAtual === 'coop' && dificuldadeAtual === 'normal') {
+					qtdMinMax = { v: [1, 2], h: [1, 2] };
+				} else { // Extremo PvP / Difícil Coop
+					qtdMinMax = { v: [1, 3], h: [1, 3] };
+				}
+
+				// Gerar conexões verticais (Linha 1 <-> Linha Final)
+				let numV = Math.floor(Math.random() * (qtdMinMax.v[1] - qtdMinMax.v[0] + 1)) + qtdMinMax.v[0];
+				for(let i=0; i<numV; i++) {
+					let colAleatoria = Math.floor(Math.random() * tamanho);
+					desenharConexaoExterna(
+						buscarPastaNoVetor(0, colAleatoria, 1, 0, tamanho),
+						buscarPastaNoVetor(tamanho-1, colAleatoria, -1, 0, tamanho),
+						'vertical', tamanho
+					);
+				}
+
+				// Gerar conexões horizontais (Coluna A <-> Coluna Final)
+				let numH = Math.floor(Math.random() * (qtdMinMax.h[1] - qtdMinMax.h[0] + 1)) + qtdMinMax.h[0];
+				for(let i=0; i<numH; i++) {
+					let linAleatoria = Math.floor(Math.random() * tamanho);
+					desenharConexaoExterna(
+						buscarPastaNoVetor(linAleatoria, 0, 0, 1, tamanho),
+						buscarPastaNoVetor(linAleatoria, tamanho-1, 0, -1, tamanho),
+						'horizontal', tamanho
+					);
+				}
+			}
+
+            // Restante do algoritmo de caminhos internos (Reta padrão)
+            pastas.sort(() => Math.random() - 0.5);
+            const direcoes = [[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
+            pastas.forEach(p1 => {
+                let dirs = [...direcoes].sort(() => Math.random() - 0.5);
+                dirs.forEach(([dr, dc]) => {
+                    if (p1.conexoes >= p1.meta) return;
+                    for (let dist = 1; dist < tamanho; dist++) {
+                        let nr = p1.r + (dr * dist), nc = p1.c + (dc * dist);
+                        let p2 = pastas.find(p => p.r === nr && p.c === nc);
+                        if (p2) {
+                            if (validarConexao(p1, p2)) {
+                                ctx.beginPath();
+                                ctx.moveTo(p1.c * TAM + OFFSET + 30, p1.r * TAM + OFFSET + 30);
+                                ctx.lineTo(p2.c * TAM + OFFSET + 30, p2.r * TAM + OFFSET + 30);
+                                ctx.stroke();
+                                p1.conexoes++; p2.conexoes++;
+                                p1.vizinhos.push(p2); p2.vizinhos.push(p1);
+                            }
+                            break; 
+                        }
+                    }
+                });
+            });
+
+            function validarConexao(p1, p2) {
+				if (p1 === p2 || p1.conexoes >= p1.meta || p2.conexoes >= p2.meta || p1.vizinhos.includes(p2)) return false;
+
+				const s1 = p1.tipo;
+				const s2 = p2.tipo;
+
+				// Identificadores de Grupo
+				const isZonaSegura = (s) => s.includes("Componente%20(1).png") || /Componente%20\(1[0-7]\)/.test(s);
+				const isDiretorioPrincipal = (s) => s.includes("Componente%20(8)");
+				const isChaveAcesso = (s) => s.includes("Componente%20(7)");
+				const isQuarentena = (s) => s.includes("Componente%20(9)");
+				const isNeutra = (s) => s.includes("Componente%20(2)");
+
+				// REGRA: Zonas Seguras (Brancas ou Coloridas) não se conectam entre si
+				if (isZonaSegura(s1) && isZonaSegura(s2)) return false;
+
+				// REGRA: Diretório Principal (8) não conecta com Zonas Seguras
+				if ((isDiretorioPrincipal(s1) && isZonaSegura(s2)) || (isDiretorioPrincipal(s2) && isZonaSegura(s1))) return false;
+
+				// REGRA: Chave de Acesso (7) restrições
+				if (isChaveAcesso(s1) && (isZonaSegura(s2) || isDiretorioPrincipal(s2) || isChaveAcesso(s2))) return false;
+				if (isChaveAcesso(s2) && (isZonaSegura(s1) || isDiretorioPrincipal(s1) || isChaveAcesso(s1))) return false;
+
+				// REGRA: Quarentena (9) não conecta com Zonas Seguras
+				if ((isQuarentena(s1) && isZonaSegura(s2)) || (isQuarentena(s2) && isZonaSegura(s1))) return false;
+
+				// REGRA: Não conectar pastas iguais (exceto Neutras)
+				const extrairNum = (s) => s.match(/Componente%20\((\d+)\)/)?.[1];
+				if (!isNeutra(s1) && !isNeutra(s2) && extrairNum(s1) === extrairNum(s2)) return false;
+
+				return true;
+			}
+
+            return !pastas.some(p => p.conexoes < (p.tipo.includes("Componente%20(8)") ? 1 : 3));
+        }
+
+        let sucesso = false, tentativas = 0;
+        while (!sucesso && tentativas < 20) { sucesso = realizarDesenho(); tentativas++; }
+        if (!sucesso) gerarMapa();
+    }
+
+    function gerarMapa() {
+		const conf = CONFIG[modoAtual][dificuldadeAtual], tamanho = conf.tamanho;
+		const container = document.getElementById('container-mapa'), gridBase = document.getElementById('grid');
+		container.style.display = 'block'; gridBase.innerHTML = '';
+		
+		let cI = document.querySelector('.camada-icones'); if (cI) cI.remove();
+		cI = document.createElement('div'); cI.className = 'camada-icones';
+		cI.style.top = "20px"; cI.style.left = "20px"; container.appendChild(cI);
+
+		let cC = document.getElementById('camada-caminhos'); if (cC) cC.remove();
+		cC = document.createElement('canvas'); cC.id = 'camada-caminhos';
+		cC.style.top = "20px"; cC.style.left = "20px"; container.appendChild(cC);
+
+		const temp = `60px repeat(${tamanho}, 60px)`;
+		gridBase.style.gridTemplateColumns = temp; cI.style.gridTemplateColumns = temp;
+
+		gridBase.appendChild(Object.assign(document.createElement('div'), {className: 'celula coordenada'}));
+		cI.appendChild(Object.assign(document.createElement('div'), {className: 'celula-icone'}));
+		for(let l=0; l<tamanho; l++) {
+			let letCell = document.createElement('div'); letCell.className = 'celula coordenada';
+			letCell.innerText = LETRAS[l]; gridBase.appendChild(letCell);
+			cI.appendChild(document.createElement('div'));
+		}
+		for(let r=0; r<tamanho; r++) {
+			let numCell = document.createElement('div'); numCell.className = 'celula coordenada';
+			numCell.innerText = r + 1; gridBase.appendChild(numCell);
+			cI.appendChild(document.createElement('div'));
+			for(let c=0; c<tamanho; c++) {
+				let cell = document.createElement('div'); cell.className = 'celula celula-jogo';
+				cell.id = `cell-${r}-${c}`; gridBase.appendChild(cell);
+				let iconSlot = document.createElement('div'); iconSlot.className = 'celula-icone';
+				iconSlot.id = `slot-icon-${r}-${c}`; cI.appendChild(iconSlot);
+			}
+		}
+
+		const isSlotVazio = (r, c) => document.getElementById(`slot-icon-${r}-${c}`).innerHTML === '';
+		let posicoesEspeciais = [];
+
+		let coordsSeguras = [];
+		if (conf.seguras) {
+			coordsSeguras = conf.seguras.map(s => {
+				const col = LETRAS.indexOf(s[0]);
+				const row = parseInt(s.substring(1)) - 1;
+				return [row, col];
+			});
+		} else {
+			let todas = []; for(let r=0; r<tamanho; r++) for(let c=0; c<tamanho; c++) todas.push([r, c]);
+			todas.sort(() => Math.random() - 0.5);
+			for(let pos of todas) {
+				if(coordsSeguras.length < 8 && coordsSeguras.every(s => Math.abs(s[0]-pos[0])>=3 || Math.abs(s[1]-pos[1])>=3)) {
+					coordsSeguras.push(pos);
+				}
+			}
+		}
+		let imgsS = []; coresSelecionadas.forEach(cor => imgsS.push(`Componente (${MAPA_CORES[cor]}).png`));
+		while(imgsS.length < 8) imgsS.push("Componente (1).png");
+		imgsS.sort(() => Math.random() - 0.5);
+		coordsSeguras.forEach((coord, i) => {
+			document.getElementById(`slot-icon-${coord[0]}-${coord[1]}`).innerHTML = `<img src="${imgsS[i]}" class="pasta-img">`;
+		});
+
+		if (conf.vazio > 0) {
+			let disp = []; for(let r=0; r<tamanho; r++) for(let c=0; c<tamanho; c++) if(isSlotVazio(r, c)) disp.push({r, c});
+			disp.sort(() => Math.random() - 0.5);
+			for(let i=0; i < Math.floor((tamanho*tamanho)*conf.vazio) && i<disp.length; i++) {
+				document.getElementById(`cell-${disp[i].r}-${disp[i].c}`).setAttribute('data-tipo', 'vazio');
+			}
+		}
+
+		let filaEspeciais = [];
+		filaEspeciais.push("Componente (8).png");
+		for(let i=0; i<conf.c7[0]; i++) filaEspeciais.push("Componente (7).png");
+		let c9qtd = Math.floor(Math.random()*(conf.c9[1]-conf.c9[0]+1))+conf.c9[0];
+		for(let i=0; i<c9qtd; i++) filaEspeciais.push("Componente (9).png");
+
+		filaEspeciais.forEach(path => {
+			let cand = [];
+			for(let r=0; r<tamanho; r++) {
+				for(let c=0; c<tamanho; c++) {
+					if(isSlotVazio(r, c) && document.getElementById(`cell-${r}-${c}`).getAttribute('data-tipo') !== 'vazio') {
+						let distOk = posicoesEspeciais.every(p => {
+							let d = Math.sqrt(Math.pow(r - p.r, 2) + Math.pow(c - p.c, 2));
+							return d >= 2.5; 
+						});
+						if(distOk) cand.push({r, c});
+					}
+				}
+			}
+			if(cand.length === 0) {
+				for(let r=0; r<tamanho; r++) for(let c=0; c<tamanho; c++) {
+					if(isSlotVazio(r, c) && document.getElementById(`cell-${r}-${c}`).getAttribute('data-tipo') !== 'vazio') cand.push({r, c});
+				}
+			}
+			if(cand.length > 0) {
+				let p = cand[Math.floor(Math.random()*cand.length)];
+				document.getElementById(`slot-icon-${p.r}-${p.c}`).innerHTML = `<img src="${path}" class="pasta-img">`;
+				posicoesEspeciais.push(p);
+			}
+		});
+
+		const compModo = (modoAtual === 'pvp') ? 'Componente (4).png' : 'Componente (5).png';
+		['Componente (3).png', compModo, 'Componente (6).png'].forEach(path => {
+			let alvo = Math.floor(Math.random()*3) + Math.floor(tamanho/2);
+			for(let i=0; i<alvo; i++) {
+				let cand = [];
+				for(let r=0; r<tamanho; r++) for(let c=0; c<tamanho; c++) {
+					if(isSlotVazio(r, c) && document.getElementById(`cell-${r}-${c}`).getAttribute('data-tipo') !== 'vazio') {
+						let ok = true;
+						for(let j=0; j<tamanho; j++) {
+							if(document.getElementById(`slot-icon-${r}-${j}`).innerHTML.includes(path) || 
+							   document.getElementById(`slot-icon-${j}-${c}`).innerHTML.includes(path)) ok = false;
+						}
+						if(ok) cand.push({r, c});
+					}
+				}
+				if(cand.length > 0) {
+					let p = cand[Math.floor(Math.random()*cand.length)];
+					document.getElementById(`slot-icon-${p.r}-${p.c}`).innerHTML = `<img src="${path}" class="pasta-img">`;
+				}
+			}
+		});
+
+		for(let r=0; r<tamanho; r++) for(let c=0; c<tamanho; c++) {
+			if(isSlotVazio(r, c) && document.getElementById(`cell-${r}-${c}`).getAttribute('data-tipo') !== 'vazio') {
+				document.getElementById(`slot-icon-${r}-${c}`).innerHTML = `<img src="Componente (2).png" class="pasta-img">`;
+			}
+		}
+
+		setTimeout(() => desenharCaminhos(tamanho), 100);
+	}
+</script>
+</body>
+</html>
