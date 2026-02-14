@@ -224,8 +224,7 @@
     function desenharCaminhos(tamanho) {
         const canvas = document.getElementById('camada-caminhos');
         const ctx = canvas.getContext('2d');
-        const TAM = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--tile-size'));
-		const OFFSET = TAM;
+        const TAM = 60, OFFSET = 60;
         canvas.width = (tamanho + 1) * TAM;
         canvas.height = (tamanho + 1) * TAM;
 
