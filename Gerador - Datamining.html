@@ -5,117 +5,133 @@
     <title>Gerador de Mapas - Datamining</title>
     <link rel="icon" type="image/png" href="Ícone 11 - Datamine.png">
     <style>
-        :root {
-            --bg-color: #11806A;
-            --window-bg: #ffffff;
-            --accent-color: #11806A;
-            --border-main: 6px solid #000;
-			--tile-size: 60px;
-        }
+		:root {
+			--bg-color: #11806A;
+			--window-bg: #ffffff;
+			--accent-color: #11806A;
+			--border-main: 6px solid #000;
+			--tile-size: 60px; /* Variável para facilitar o ajuste */
+		}
 
-        body {
-            background-color: var(--bg-color);
-            font-family: Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 10px;
-        }
+		body {
+			background-color: var(--bg-color);
+			font-family: Arial, sans-serif;
+			margin: 0;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 10px; /* Reduzido para mobile */
+		}
 
-        .painel-controle {
-            background-color: var(--window-bg);
-            border: var(--border-main);
-            border-radius: 15px;
-            padding: 15px;
-            width: 100%;
+		.painel-controle {
+			background-color: var(--window-bg);
+			border: var(--border-main);
+			border-radius: 15px;
+			padding: 15px;
+			width: 100%; /* Ocupa a largura disponível */
 			max-width: 900px;
 			box-sizing: border-box;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
-        }
+			box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+			margin-bottom: 20px;
+		}
 
-        h1 { text-align: center; text-transform: uppercase; margin-top: 0; text-decoration: underline; font-size: 1.2rem;}
+		h1 { text-align: center; text-transform: uppercase; margin-top: 0; text-decoration: underline; font-size: 1.2rem;}
 
-        .opcoes-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-		
-		@media (max-width: 768px) {
+		.opcoes-grid {
+			display: grid;
+			grid-template-columns: 1fr; /* Coluna única no mobile */
+			gap: 10px;
+			margin-bottom: 20px;
+		}
+
+		@media (min-width: 600px) {
 			.opcoes-grid { grid-template-columns: 1fr 1fr; }
 		}
 
-        .seletor-item {
-            background: #f0f0f0;
-            padding: 10px;
-            border-radius: 8px;
-            border: 2px solid #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+		.seletor-item {
+			background: #f0f0f0;
+			padding: 10px;
+			border-radius: 8px;
+			border: 2px solid #000;
+		}
 
-        .seletor-item.full-width { grid-column: 1 / -1; }
+		.seletor-item.full-width { grid-column: 1 / -1; }
 
-        .label-seletor {
-            display: block; font-weight: bold; margin-bottom: 8px; font-size: 11px; 
-            text-align: center; text-transform: uppercase;
-        }
+		.label-seletor {
+			display: block; font-weight: bold; margin-bottom: 8px; font-size: 10px; 
+			text-align: center; text-transform: uppercase;
+		}
 
-        .button-grid {
-            display: grid; grid-auto-columns: 1fr; grid-auto-flow: column; gap: 4px; width: 100%;
-        }
+		.button-grid {
+			display: grid; grid-auto-columns: 1fr; grid-auto-flow: column; gap: 4px;
+		}
 
-        .color-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
-        }
+		.color-grid {
+			display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; /* 4 colunas no mobile */
+		}
 
-        .btn-sel {
-            padding: 8px 2px; font-family: Arial, sans-serif; font-size: 11px;
-            font-weight: bold; cursor: pointer; border: 2px solid #000;
-            background: #fff; color: #000; text-transform: uppercase; transition: 0.2s;
-        }
+		@media (min-width: 600px) {
+			.color-grid { grid-template-columns: repeat(8, 1fr); }
+		}
 
-        .btn-sel:hover { background: #eee; }
-        .btn-sel.active { background: var(--accent-color); color: white; }
+		.btn-sel {
+			padding: 10px 2px; font-size: 10px;
+			font-weight: bold; cursor: pointer; border: 2px solid #000;
+			background: #fff; text-transform: uppercase;
+		}
 
-        .btn-color.active[data-color="Vermelho"] { background-color: #c40026; color: white; }
-        .btn-color.active[data-color="Laranja"]  { background-color: #ec9800; color: black; }
-        .btn-color.active[data-color="Amarelo"]  { background-color: #ffeb00; color: black; }
-        .btn-color.active[data-color="Verde"]    { background-color: #4da619; color: black; }
-        .btn-color.active[data-color="Ciano"]    { background-color: #00a0dd; color: black; }
-        .btn-color.active[data-color="Azul"]     { background-color: #00468b; color: white; }
-        .btn-color.active[data-color="Roxo"]     { background-color: #6c005f; color: white; }
-        .btn-color.active[data-color="Magenta"]  { background-color: #c50067; color: white; }
+		.btn-sel.active { background: var(--accent-color); color: white; }
 
-        .btn-gerar {
-            width: 100%; padding: 15px; background-color: #000; color: #fff;
-            border: none; border-radius: 8px; cursor: pointer; font-weight: bold;
-            font-size: 18px; text-transform: uppercase; margin-top: 10px;
-        }
+		/* Estilização das cores ativas (mantida do seu original) */
+		.btn-color.active[data-color="Vermelho"] { background-color: #c40026; color: white; }
+		.btn-color.active[data-color="Laranja"]  { background-color: #ec9800; }
+		.btn-color.active[data-color="Amarelo"]  { background-color: #ffeb00; }
+		.btn-color.active[data-color="Verde"]    { background-color: #4da619; }
+		.btn-color.active[data-color="Ciano"]    { background-color: #00a0dd; }
+		.btn-color.active[data-color="Azul"]     { background-color: #00468b; color: white; }
+		.btn-color.active[data-color="Roxo"]     { background-color: #6c005f; color: white; }
+		.btn-color.active[data-color="Magenta"]  { background-color: #c50067; color: white; }
 
-        #container-mapa {
-            position: relative; background-color: #ffffff; border: var(--border-main);
-            border-radius: 12px; display: none; margin-top: 20px; padding: 20px; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
-        }
+		.btn-gerar {
+			width: 100%; padding: 15px; background-color: #000; color: #fff;
+			border: none; border-radius: 8px; cursor: pointer; font-weight: bold;
+			font-size: 16px; text-transform: uppercase;
+		}
 
-        .grid-mestre { display: grid; margin: 0 auto; background-color: #fff; position: relative; z-index: 0; }
+		/* CONTAINER DO MAPA COM SCROLL HORIZONTAL SE NECESSÁRIO */
+		#container-mapa {
+			position: relative; 
+			background-color: #ffffff; 
+			border: var(--border-main);
+			border-radius: 12px; 
+			display: none; 
+			margin-top: 20px; 
+			padding: 20px;
+			max-width: 100%;
+			overflow-x: auto; /* Permite deslizar o mapa no celular */
+			-webkit-overflow-scrolling: touch;
+		}
 
-        #camada-caminhos { position: absolute; z-index: 1; pointer-events: none; }
-        
-        .camada-icones { display: grid; position: absolute; z-index: 2; pointer-events: none; }
+		.grid-mestre { display: grid; background-color: #fff; position: relative; }
+		#camada-caminhos { position: absolute; z-index: 1; pointer-events: none; }
+		.camada-icones { display: grid; position: absolute; z-index: 2; pointer-events: none; }
 
-        .celula, .celula-icone {
-            width: var(--tile-size); height: var(--tile-size); display: flex; justify-content: center; align-items: center; box-sizing: border-box;
-        }
+		.celula, .celula-icone {
+			width: var(--tile-size); 
+			height: var(--tile-size); 
+			display: flex; justify-content: center; align-items: center; box-sizing: border-box;
+		}
 
-        .coordenada { color: #000; font-weight: bold; font-size: 18px; }
-        .celula-jogo { background-color: #11806A; border: 1px solid rgba(255,255,255,0.2); }
-        .pasta-img { width: 70%; height: 70%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); }
-    </style>
+		.coordenada { color: #000; font-weight: bold; font-size: 14px; }
+		.celula-jogo { background-color: #11806A; border: 1px solid rgba(255,255,255,0.2); }
+		.pasta-img { width: 70%; height: 70%; object-fit: contain; }
+
+		/* Ajuste para telas muito pequenas: Reduz o tamanho das células */
+		@media (max-width: 500px) {
+			:root { --tile-size: 45px; }
+			.coordenada { font-size: 12px; }
+		}
+	</style>
 </head>
 <body>
 
