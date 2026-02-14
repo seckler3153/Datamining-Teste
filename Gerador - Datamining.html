@@ -40,8 +40,8 @@
 		.opcoes-grid {
 			display: grid;
 			grid-template-columns: 1fr; /* Coluna única no mobile */
-			gap: 10px;
-			margin-bottom: 20px;
+			gap: 15px;
+			margin-bottom: 15px;
 		}
 
 		@media (min-width: 600px) {
@@ -100,16 +100,24 @@
 
 		/* CONTAINER DO MAPA COM SCROLL HORIZONTAL SE NECESSÁRIO */
 		#container-mapa {
-			position: relative; 
-			background-color: #ffffff; 
+			position: relative;
+			background-color: #ffffff;
 			border: var(--border-main);
-			border-radius: 12px; 
-			display: none; 
-			margin-top: 20px; 
+			border-radius: 12px;
+			display: none;
+			margin-top: 10px;
 			padding: 20px;
-			max-width: 100%;
-			overflow-x: auto; /* Permite deslizar o mapa no celular */
-			-webkit-overflow-scrolling: touch;
+			
+			/* Garante que o box não ultrapasse a tela e centraliza */
+			max-width: calc(100vw - 20px); 
+			overflow: hidden;
+		}
+		
+		#map-scaler {
+			transform-origin: top left;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
 
 		.grid-mestre { display: grid; background-color: #fff; position: relative; }
@@ -167,7 +175,9 @@
 </div>
 
 <div id="container-mapa">
-    <div id="grid" class="grid-mestre"></div>
+    <div id="map-scaler">
+        <div id="grid" class="grid-mestre"></div>
+    </div>
 </div>
 
 <script>
@@ -224,7 +234,8 @@
     function desenharCaminhos(tamanho) {
         const canvas = document.getElementById('camada-caminhos');
         const ctx = canvas.getContext('2d');
-        const TAM = 60, OFFSET = 60;
+        const TAM = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--tile-size'));
+		const OFFSET = TAM;
         canvas.width = (tamanho + 1) * TAM;
         canvas.height = (tamanho + 1) * TAM;
 
@@ -593,8 +604,40 @@
 			}
 		}
 
-		setTimeout(() => desenharCaminhos(tamanho), 100);
-	}
+		setTimeout(() => {
+            desenharCaminhos(tamanho);
+            ajustarEscalaMapa(tamanho);
+        }, 100);
+    }
+
+    function ajustarEscalaMapa(tamanho) {
+        const container = document.getElementById('container-mapa');
+        const scaler = document.getElementById('map-scaler');
+        const grid = document.getElementById('grid');
+        
+        // Largura total do mapa real (Células + Coordenadas iniciais)
+        const larguraRealMapa = (tamanho + 1) * 60; 
+        // Largura disponível na tela do celular (com um pequeno respiro)
+        const larguraDisponivel = container.offsetWidth - 20;
+
+        if (larguraRealMapa > larguraDisponivel) {
+            const escala = larguraDisponivel / larguraRealMapa;
+            scaler.style.transform = `scale(${escala})`;
+            // Ajusta a altura do container pai para não sobrar buracos brancos
+            container.style.height = (larguraRealMapa * escala) + "px";
+        } else {
+            scaler.style.transform = `scale(1)`;
+            container.style.height = "auto";
+        }
+    }
+
+    // Adicione um listener para ajustar se o usuário girar o celular
+    window.addEventListener('resize', () => {
+        const conf = CONFIG[modoAtual][dificuldadeAtual];
+        if(document.getElementById('container-mapa').style.display === 'block') {
+            ajustarEscalaMapa(conf.tamanho);
+        }
+    });
 </script>
 </body>
 </html>
