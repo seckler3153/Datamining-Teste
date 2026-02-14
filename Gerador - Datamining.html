@@ -5,7 +5,7 @@
     <title>Gerador de Mapas - Datamining</title>
     <link rel="icon" type="image/png" href="Ícone 11 - Datamine.png">
     <style>
-		:root {
+        :root {
             --bg-color: #11806A;
             --window-bg: #ffffff;
             --accent-color: #11806A;
@@ -28,8 +28,6 @@
             border-radius: 15px;
             padding: 25px;
             width: 900px;
-            max-width: 100%; /* Garante que não ultrapassa o ecrã */
-            box-sizing: border-box;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             margin-bottom: 20px;
         }
@@ -40,7 +38,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .seletor-item {
@@ -77,7 +75,6 @@
         .btn-sel:hover { background: #eee; }
         .btn-sel.active { background: var(--accent-color); color: white; }
 
-        /* Cores específicas mantidas */
         .btn-color.active[data-color="Vermelho"] { background-color: #c40026; color: white; }
         .btn-color.active[data-color="Laranja"]  { background-color: #ec9800; color: black; }
         .btn-color.active[data-color="Amarelo"]  { background-color: #ffeb00; color: black; }
@@ -95,13 +92,13 @@
 
         #container-mapa {
             position: relative; background-color: #ffffff; border: var(--border-main);
-            border-radius: 12px; display: none; margin-top: 20px; padding: 20px;
-            max-width: 100%;
-            overflow: auto; /* Permite scroll se o mapa for maior que o ecrã */
+            border-radius: 12px; display: none; margin-top: 20px; padding: 20px; 
         }
 
         .grid-mestre { display: grid; margin: 0 auto; background-color: #fff; position: relative; z-index: 0; }
+
         #camada-caminhos { position: absolute; z-index: 1; pointer-events: none; }
+        
         .camada-icones { display: grid; position: absolute; z-index: 2; pointer-events: none; }
 
         .celula, .celula-icone {
@@ -111,42 +108,6 @@
         .coordenada { color: #000; font-weight: bold; font-size: 18px; }
         .celula-jogo { background-color: #11806A; border: 1px solid rgba(255,255,255,0.2); }
         .pasta-img { width: 70%; height: 70%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); }
-
-        /* --- AJUSTES MOBILE (Baseados no arquivo Roletas) --- */
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            
-            .painel-controle { 
-                padding: 15px; 
-                border-width: 4px;
-            }
-
-            h1 { font-size: 18px; }
-
-            .opcoes-grid {
-                grid-template-columns: 1fr; /* Coluna única no mobile */
-                gap: 10px;
-            }
-
-            .seletor-item.full-width { grid-column: span 1; }
-
-            .color-grid {
-                grid-template-columns: repeat(4, 1fr); /* 4 cores por linha no mobile */
-            }
-
-            .btn-gerar { font-size: 14px; padding: 12px; }
-
-            #container-mapa {
-                padding: 10px;
-                border-width: 4px;
-            }
-            
-            /* Ajuste para o mapa não quebrar o layout */
-            .celula, .celula-icone {
-                width: 45px; height: 45px;
-            }
-            .coordenada { font-size: 14px; }
-        }
     </style>
 </head>
 <body>
@@ -244,11 +205,13 @@
         canvas.width = (tamanho + 1) * TAM;
         canvas.height = (tamanho + 1) * TAM;
 
-        const eZonaSegura = (src) => src.includes("Componente%20(10)") || src.includes("Componente%20(11)") || 
-                                    src.includes("Componente%20(12)") || src.includes("Componente%20(13)") || 
-                                    src.includes("Componente%20(14)") || src.includes("Componente%20(15)") || 
-                                    src.includes("Componente%20(16)") || src.includes("Componente%20(17)") ||
-                                    src.includes("Componente%20(1).png");
+        const eZonaSegura = (src) => {
+			return src.includes("Componente%20(1).png") || 
+				   src.includes("Componente%20(10)") || src.includes("Componente%20(11)") || 
+				   src.includes("Componente%20(12)") || src.includes("Componente%20(13)") || 
+				   src.includes("Componente%20(14)") || src.includes("Componente%20(15)") || 
+				   src.includes("Componente%20(16)") || src.includes("Componente%20(17)");
+		};
 
         const eComponenteEspecial = (src) => src.includes("Componente%20(7)") || src.includes("Componente%20(8)") || src.includes("Componente%20(9)");
 
@@ -312,6 +275,12 @@
 
 			function desenharConexaoExterna(p1, p2, tipo, tamanho) {
 				if (!p1 || !p2) return;
+				
+				const slot1 = document.getElementById(`slot-icon-${p1.r}-${p1.c}`);
+				const slot2 = document.getElementById(`slot-icon-${p2.r}-${p2.c}`);
+				if (eZonaSegura(slot1.querySelector('img').src) && eZonaSegura(slot2.querySelector('img').src)) {
+					return; 
+				}
 				const x1 = p1.c * TAM + OFFSET + 30;
 				const y1 = p1.r * TAM + OFFSET + 30;
 				const x2 = p2.c * TAM + OFFSET + 30;
@@ -344,7 +313,14 @@
 					ctx.moveTo(x2, y2); ctx.lineTo((tamanho * TAM) + OFFSET + ext, y2);
 				}
 				ctx.stroke();
-				// ... manter lógica de incrementar conexões nas pastas
+    
+				// Atualiza contadores para o algoritmo de satisfação
+				const pasta1 = pastas.find(p => p.r === p1.r && p.c === p1.c);
+				const pasta2 = pastas.find(p => p.r === p2.r && p.c === p2.c);
+				if(pasta1 && pasta2) {
+					pasta1.conexoes++; pasta2.conexoes++;
+					pasta1.vizinhos.push(pasta2); pasta2.vizinhos.push(pasta1);
+				}
 			}
 
 			// --- APLICAÇÃO DENTRO DO IF DE DIFICULDADE ---
