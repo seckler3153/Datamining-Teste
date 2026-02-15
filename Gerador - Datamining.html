@@ -93,15 +93,42 @@
         }
 
         #container-mapa {
-            position: relative; background-color: #ffffff; border: var(--border-main);
-            border-radius: 12px; display: none; margin-top: 20px; padding: 20px; max-width: 100%; overflow: auto;
-        }
+            position: relative;
+			background-color: #ffffff;
+			border: var(--border-main);
+			border-radius: 12px;
+			display: none;
+			margin-top: 20px;
+			padding: 20px;
+			width: fit-content; /* Garante que o container envolva o grid */
+			max-width: 100%;
+			overflow: auto; /* Permite scroll horizontal no mobile sem quebrar o desenho */
+		}
 
-        .grid-mestre { display: grid; margin: 0 auto; background-color: #fff; position: relative; z-index: 0; }
+        .grid-mestre {
+			display: grid; 
+			margin: 0; /* Alinhado à esquerda para bater com o canvas */
+			background-color: #fff; 
+			position: relative; 
+			z-index: 0;
+		}
 
-        #camada-caminhos { position: absolute; z-index: 1; pointer-events: none; }
+        #camada-caminhos { 
+			position: absolute; 
+			z-index: 1; 
+			pointer-events: none; 
+			left: 20px; /* Deve ser igual ao padding do container-mapa */
+			top: 20px;
+		}
         
-        .camada-icones { display: grid; position: absolute; z-index: 2; pointer-events: none; }
+        .camada-icones { 
+			display: grid; 
+			position: absolute; 
+			z-index: 2; 
+			pointer-events: none; 
+			left: 20px; /* Deve ser igual ao padding do container-mapa */
+			top: 20px;
+		}
 
         .celula, .celula-icone {
             width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; box-sizing: border-box;
@@ -112,39 +139,22 @@
         .pasta-img { width: 70%; height: 70%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); }
 		
 		@media (max-width: 768px) {
-            body { padding: 10px; }
-            
-            .painel-controle { 
-                padding: 15px; 
-                border-width: 4px;
-            }
+			body { padding: 10px; }
+			
+			.painel-controle { padding: 15px; border-width: 4px; }
+			h1 { font-size: 18px; }
 
-            h1 { font-size: 18px; }
+			.opcoes-grid { grid-template-columns: 1fr; gap: 10px; }
+			.seletor-item.full-width { grid-column: span 1; }
+			.color-grid { grid-template-columns: repeat(4, 1fr); }
 
-            .opcoes-grid {
-                grid-template-columns: 1fr; /* Coluna única no mobile */
-                gap: 10px;
-            }
-
-            .seletor-item.full-width { grid-column: span 1; }
-
-            .color-grid {
-                grid-template-columns: repeat(4, 1fr); /* 4 cores por linha no mobile */
-            }
-
-            .btn-gerar { font-size: 14px; padding: 12px; }
-
-            #container-mapa {
-                padding: 10px;
-                border-width: 4px;
-            }
-            
-            /* Ajuste para o mapa não quebrar o layout */
-            .celula, .celula-icone {
-                width: 45px; height: 45px;
-            }
-            .coordenada { font-size: 14px; }
-        }
+			/* No mobile, mantemos o tamanho das células fixo em 60px para não desalinharem do Canvas */
+			/* O usuário navegará pelo mapa via scroll lateral, mantendo a precisão das linhas */
+			.celula, .celula-icone {
+				width: 60px; 
+				height: 60px;
+			}
+		}
     </style>
 </head>
 <body>
@@ -479,44 +489,68 @@
         if (!sucesso) gerarMapa();
     }
 
-    function gerarMapa() {
+	function gerarMapa() {
 		const conf = CONFIG[modoAtual][dificuldadeAtual], tamanho = conf.tamanho;
 		const container = document.getElementById('container-mapa'), gridBase = document.getElementById('grid');
-		container.style.display = 'block'; gridBase.innerHTML = '';
 		
-		let cI = document.querySelector('.camada-icones'); if (cI) cI.remove();
-		cI = document.createElement('div'); cI.className = 'camada-icones';
-		cI.style.top = "20px"; cI.style.left = "20px"; container.appendChild(cI);
+		container.style.display = 'block'; 
+		gridBase.innerHTML = '';
+		
+		// Camada de Ícones - Removido o posicionamento via JS para usar o CSS
+		let cI = document.querySelector('.camada-icones'); 
+		if (cI) cI.remove();
+		cI = document.createElement('div'); 
+		cI.className = 'camada-icones';
+		container.appendChild(cI);
 
-		let cC = document.getElementById('camada-caminhos'); if (cC) cC.remove();
-		cC = document.createElement('canvas'); cC.id = 'camada-caminhos';
-		cC.style.top = "20px"; cC.style.left = "20px"; container.appendChild(cC);
+		// Camada de Caminhos (Canvas) - Removido o posicionamento via JS
+		let cC = document.getElementById('camada-caminhos'); 
+		if (cC) cC.remove();
+		cC = document.createElement('canvas'); 
+		cC.id = 'camada-caminhos';
+		container.appendChild(cC);
 
 		const temp = `60px repeat(${tamanho}, 60px)`;
-		gridBase.style.gridTemplateColumns = temp; cI.style.gridTemplateColumns = temp;
+		gridBase.style.gridTemplateColumns = temp; 
+		cI.style.gridTemplateColumns = temp;
 
+		// Cabeçalho das coordenadas (Letras)
 		gridBase.appendChild(Object.assign(document.createElement('div'), {className: 'celula coordenada'}));
 		cI.appendChild(Object.assign(document.createElement('div'), {className: 'celula-icone'}));
+		
 		for(let l=0; l<tamanho; l++) {
-			let letCell = document.createElement('div'); letCell.className = 'celula coordenada';
-			letCell.innerText = LETRAS[l]; gridBase.appendChild(letCell);
+			let letCell = document.createElement('div'); 
+			letCell.className = 'celula coordenada';
+			letCell.innerText = LETRAS[l]; 
+			gridBase.appendChild(letCell);
 			cI.appendChild(document.createElement('div'));
 		}
+
+		// Geração das células e slots de ícones
 		for(let r=0; r<tamanho; r++) {
-			let numCell = document.createElement('div'); numCell.className = 'celula coordenada';
-			numCell.innerText = r + 1; gridBase.appendChild(numCell);
+			let numCell = document.createElement('div'); 
+			numCell.className = 'celula coordenada';
+			numCell.innerText = r + 1; 
+			gridBase.appendChild(numCell);
 			cI.appendChild(document.createElement('div'));
+			
 			for(let c=0; c<tamanho; c++) {
-				let cell = document.createElement('div'); cell.className = 'celula celula-jogo';
-				cell.id = `cell-${r}-${c}`; gridBase.appendChild(cell);
-				let iconSlot = document.createElement('div'); iconSlot.className = 'celula-icone';
-				iconSlot.id = `slot-icon-${r}-${c}`; cI.appendChild(iconSlot);
+				let cell = document.createElement('div'); 
+				cell.className = 'celula celula-jogo';
+				cell.id = `cell-${r}-${c}`; 
+				gridBase.appendChild(cell);
+				
+				let iconSlot = document.createElement('div'); 
+				iconSlot.className = 'celula-icone';
+				iconSlot.id = `slot-icon-${r}-${c}`; 
+				cI.appendChild(iconSlot);
 			}
 		}
 
 		const isSlotVazio = (r, c) => document.getElementById(`slot-icon-${r}-${c}`).innerHTML === '';
 		let posicoesEspeciais = [];
 
+		// Lógica de Zonas Seguras
 		let coordsSeguras = [];
 		if (conf.seguras) {
 			coordsSeguras = conf.seguras.map(s => {
@@ -525,7 +559,8 @@
 				return [row, col];
 			});
 		} else {
-			let todas = []; for(let r=0; r<tamanho; r++) for(let c=0; c<tamanho; c++) todas.push([r, c]);
+			let todas = []; 
+			for(let r=0; r<tamanho; r++) for(let c=0; c<tamanho; c++) todas.push([r, c]);
 			todas.sort(() => Math.random() - 0.5);
 			for(let pos of todas) {
 				if(coordsSeguras.length < 8 && coordsSeguras.every(s => Math.abs(s[0]-pos[0])>=3 || Math.abs(s[1]-pos[1])>=3)) {
@@ -533,21 +568,27 @@
 				}
 			}
 		}
-		let imgsS = []; coresSelecionadas.forEach(cor => imgsS.push(`Componente (${MAPA_CORES[cor]}).png`));
+
+		let imgsS = []; 
+		coresSelecionadas.forEach(cor => imgsS.push(`Componente (${MAPA_CORES[cor]}).png`));
 		while(imgsS.length < 8) imgsS.push("Componente (1).png");
 		imgsS.sort(() => Math.random() - 0.5);
+		
 		coordsSeguras.forEach((coord, i) => {
 			document.getElementById(`slot-icon-${coord[0]}-${coord[1]}`).innerHTML = `<img src="${imgsS[i]}" class="pasta-img">`;
 		});
 
+		// Células Vazias
 		if (conf.vazio > 0) {
-			let disp = []; for(let r=0; r<tamanho; r++) for(let c=0; c<tamanho; c++) if(isSlotVazio(r, c)) disp.push({r, c});
+			let disp = []; 
+			for(let r=0; r<tamanho; r++) for(let c=0; c<tamanho; c++) if(isSlotVazio(r, c)) disp.push({r, c});
 			disp.sort(() => Math.random() - 0.5);
 			for(let i=0; i < Math.floor((tamanho*tamanho)*conf.vazio) && i<disp.length; i++) {
 				document.getElementById(`cell-${disp[i].r}-${disp[i].c}`).setAttribute('data-tipo', 'vazio');
 			}
 		}
 
+		// Pastas Especiais (8, 7 e 9)
 		let filaEspeciais = [];
 		filaEspeciais.push("Componente (8).png");
 		for(let i=0; i<conf.c7[0]; i++) filaEspeciais.push("Componente (7).png");
@@ -579,6 +620,7 @@
 			}
 		});
 
+		// Pastas de Modo e Diversos
 		const compModo = (modoAtual === 'pvp') ? 'Componente (4).png' : 'Componente (5).png';
 		['Componente (3).png', compModo, 'Componente (6).png'].forEach(path => {
 			let alvo = Math.floor(Math.random()*3) + Math.floor(tamanho/2);
@@ -601,6 +643,7 @@
 			}
 		});
 
+		// Preenchimento com Pastas Neutras (Componente 2)
 		for(let r=0; r<tamanho; r++) for(let c=0; c<tamanho; c++) {
 			if(isSlotVazio(r, c) && document.getElementById(`cell-${r}-${c}`).getAttribute('data-tipo') !== 'vazio') {
 				document.getElementById(`slot-icon-${r}-${c}`).innerHTML = `<img src="Componente (2).png" class="pasta-img">`;
