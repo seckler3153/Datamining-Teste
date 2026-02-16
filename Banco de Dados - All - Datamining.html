@@ -138,6 +138,101 @@
         /* Alterado para metade do tamanho (50px -> 25px) */
         .coop-container #player-name { font-size: 50px; text-decoration: underline; outline: none; }
         .coop-container #contador-header { font-size: 80px; font-weight: bold; color: #333; background: #eee; padding: 0 20px; border: 4px solid #000; text-align: center; }
+		
+		.notepad-container {
+			background: #fff;
+			width: 90%;
+			max-width: 800px;
+			height: 80vh;
+			border: 5px solid #000;
+			display: flex;
+			flex-direction: column;
+			padding: 15px;
+			position: relative;
+			cursor: default;
+		}
+
+		.notepad-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			border-bottom: 4px solid #000;
+			padding-bottom: 10px;
+			margin-bottom: 10px;
+		}
+		
+		.header-left { font-size: 24px; color: #000; font-family: 'Arial Black'; }
+		.header-right { display: flex; gap: 10px; }
+
+		/* Botões do Header */
+		.btn-header-notepad { padding: 5px 12px; border: 2px solid #000; cursor: pointer; font-family: 'Arial Black'; color: white; }
+		.btn-red { background: #e74c3c; }
+		.btn-green { background: #11806A; }
+
+		/* Container das camadas */
+		.layers-container { position: relative; flex-grow: 1; border: 2px solid #000; overflow: hidden; }
+
+		.notepad-textarea {
+			width: 100%; height: 100%; position: absolute; top: 0; left: 0; 
+			border: none; padding: 10px; font-size: 16px; resize: none; box-sizing: border-box; z-index: 1; 
+		}
+		
+		#draw-canvas { position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none; }
+		#draw-canvas.active { pointer-events: auto; cursor: crosshair; }
+
+		/* Container das ferramentas ajustado */
+		.paint-toolbar { 
+			display: none; background: #f4f4f4; border: 2px solid #000; padding: 5px 10px; 
+			margin-top: 5px; gap: 10px; flex-wrap: nowrap; align-items: center; justify-content: flex-start;
+		}
+		.paint-toolbar.visible { display: flex; }
+
+		.tool-group { display: flex; align-items: center; gap: 5px; font-size: 11px; font-family: sans-serif; white-space: nowrap; }
+
+		/* Cor de seleção solicitada para os botões ativos */
+		.tool-btn.active { 
+			background: #11806A !important; 
+			color: white !important; 
+		}
+
+		/* Estilo do Slider de Espessura */
+		#tool-size { width: 100px; cursor: pointer; }
+		
+		/* Círculo de pré-visualização da ponta */
+		.brush-preview-container {
+			min-width: 54px; /* Espaço para o tamanho máximo de 100px */
+			height: 54px;
+			border: 1px solid #ccc;
+			background: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-left: 10px;
+		}
+
+		#brush-preview {
+			border-radius: 50%;
+			background-color: #000;
+			transition: width 0.1s, height 0.1s;
+		}
+
+		/* Botão de cor customizado para parecer profissional */
+		#tool-color { width: 40px; height: 30px; border: 1px solid #000; cursor: pointer; padding: 0; }
+		.tool-btn { padding: 6px 10px; font-size: 11px; text-transform: uppercase; font-weight: bold; cursor: pointer; border: 1px solid #000; background: #fff; }
+		.tool-btn.active { background: #11806A; color: white; }
+
+		.btn-nota {
+			background: #777;
+			color: #fff;
+			border: 2px solid #fff;
+			padding: 8px 15px;
+			font-family: 'Arial Black', sans-serif;
+			cursor: pointer;
+			font-weight: bold;
+			transition: 0.2s;
+		}
+
+		.btn-nota:hover { background: #444; }
 
         .mobile-counter-controls {
             display: none;
@@ -166,6 +261,9 @@
                 grid-template-columns: 1fr !important; 
                 width: 100%;
 			}
+			
+			.btn-nota { font-size: 10px; padding: 6px 10px; }
+			.notepad-container { width: 90%; height: 60vh; }
 			
 			.coop-container #player-name { 
 				font-size: 25px !important; 
@@ -260,7 +358,10 @@
     <button id="btn-coop" class="btn-modo" onclick="updateLayout('coop')">Coop</button>
     
     <span class="separator"></span>
-    <button class="btn-patch" onclick="showLightbox()">Patches & Bugs</button>
+    <button class="btn-nota" onclick="toggleNotepad()">Notas</button>
+	
+	<span class="separator"></span>
+    <button class="btn-patch" onclick="showLightbox()">Patches & Bugs</button> </div>
 </div>
 
 <div id="lightbox" class="lightbox" onclick="this.style.display='none'">
@@ -286,6 +387,49 @@
 </div>
 
 <div id="pvp-grid" class="grid-players"></div>
+
+<div id="notepad-lightbox" class="lightbox" onclick="closeNotepad(event)">
+    <div class="notepad-container" onclick="event.stopPropagation()">
+        <div class="notepad-header">
+            <div class="header-left">ANOTAÇÕES</div>
+            <div class="header-right">
+                <button id="btn-toggle-mode" class="btn-header-notepad btn-green" onclick="toggleDrawMode()">Modo Livre</button>
+                <button class="btn-header-notepad btn-red" onclick="clearAllNotes()">Apagar Notas</button>
+            </div>
+        </div>
+
+        <div id="paint-tools" class="paint-toolbar">
+			<div class="tool-group">
+				<button class="tool-btn active" onclick="setTool('brush', this)">Pincel</button>
+				<button class="tool-btn" onclick="setTool('eraser', this)">Borracha</button>
+			</div>
+
+			<div class="tool-group">
+				<span>Tamanho:</span>
+				<input type="range" id="tool-size" min="5" max="50" value="10" oninput="updatePreview()">
+			</div>
+
+			<div class="brush-preview-container" title="Prévia da Ponta">
+				<div id="brush-preview" style="width: 10px; height: 10px;"></div>
+			</div>
+
+			<div class="tool-group" style="margin-left: 15px;">
+				<span>Cor:</span>
+				<input type="color" id="tool-color" value="#000000" oninput="updatePreview()">
+			</div>
+
+			<div class="tool-group">
+				<button class="tool-btn" onclick="undo()">Desfazer</button>
+				<button class="tool-btn" onclick="redo()">Refazer</button>
+			</div>
+		</div>
+
+        <div class="layers-container">
+            <textarea id="notepad-content" class="notepad-textarea" placeholder="Digite suas notas aqui..."></textarea>
+            <canvas id="draw-canvas"></canvas>
+        </div>
+    </div>
+</div>
 
 <script>
     const icons = ['V', 'A', 'B', 'Mini Patch', 'Mini Bug', 'Pedaço do Mapa'];
@@ -513,6 +657,272 @@
 		});
 
     document.addEventListener('DOMContentLoaded', () => updateLayout('4'));
+	
+	function toggleNotepad() {
+		const notepad = document.getElementById('notepad-lightbox');
+		notepad.style.display = 'flex';
+	}
+
+	// Fecha o lightbox se clicar fora da caixa branca
+	function closeNotepad(e) {
+		document.getElementById('notepad-lightbox').style.display = 'none';
+	}
+
+	// Salva o conteúdo automaticamente no LocalStorage
+	const notepadTextarea = document.getElementById('notepad-content');
+
+	// Carrega as notas ao iniciar a página
+	document.addEventListener('DOMContentLoaded', () => {
+		const savedNotes = localStorage.getItem('datamine_notes');
+		if (savedNotes) {
+			notepadTextarea.value = savedNotes;
+		}
+		updateLayout('4'); // Mantém sua chamada original
+	});
+
+	// Escuta a digitação e salva
+	notepadTextarea.addEventListener('input', () => {
+		localStorage.setItem('datamine_notes', notepadTextarea.value);
+	});
+	
+	let canvas, ctx;
+	let drawing = false;
+	let currentTool = 'brush';
+	let history = [];
+	let redoHistory = [];
+
+	function initCanvas() {
+		canvas = document.getElementById('draw-canvas');
+		ctx = canvas.getContext('2d', { willReadFrequently: true });
+		const container = canvas.parentElement;
+		canvas.width = container.offsetWidth;
+		canvas.height = container.offsetHeight;
+		saveState();
+		updatePreview();
+	}
+	
+	// Atualiza o círculo de pré-visualização
+	function updatePreview() {
+		const size = document.getElementById('tool-size').value;
+		const color = document.getElementById('tool-color').value;
+		const preview = document.getElementById('brush-preview');
+		
+		preview.style.width = size + 'px';
+		preview.style.height = size + 'px';
+		
+		// Se for borracha, mostra apenas o contorno
+		if (currentTool === 'eraser') {
+			preview.style.backgroundColor = 'transparent';
+			preview.style.border = '1px solid #000';
+			preview.style.opacity = '1';
+		} else {
+			preview.style.backgroundColor = color;
+			preview.style.border = 'none';
+			// Aplica a opacidade na prévia se for marca-texto
+			preview.style.opacity = (currentTool === 'highlighter') ? 0.5 : 1;
+		}
+	}
+
+	function toggleDrawMode() {
+		const btn = document.getElementById('btn-toggle-mode');
+		const tools = document.getElementById('paint-tools');
+		const cvs = document.getElementById('draw-canvas');
+		
+		if (btn.innerText === "Modo Livre") {
+			btn.innerText = "Modo Texto";
+			tools.classList.add('visible');
+			cvs.classList.add('active');
+			if(!canvas) initCanvas();
+		} else {
+			btn.innerText = "Modo Livre";
+			tools.classList.remove('visible');
+			cvs.classList.remove('active');
+		}
+	}
+
+	function setTool(tool, element) {
+		currentTool = tool;
+		document.querySelectorAll('#paint-tools .tool-btn').forEach(b => b.classList.remove('active'));
+		if (element) element.classList.add('active');
+		updatePreview();
+	}
+	
+	function updatePreview() {
+		const size = document.getElementById('tool-size').value;
+		const color = document.getElementById('tool-color').value;
+		const preview = document.getElementById('brush-preview');
+		
+		preview.style.width = size + 'px';
+		preview.style.height = size + 'px';
+		preview.style.backgroundColor = (currentTool === 'eraser') ? 'transparent' : color;
+		preview.style.border = (currentTool === 'eraser') ? '1px solid #000' : 'none';
+		preview.style.opacity = (currentTool === 'highlighter') ? '0.5' : '1';
+	}
+
+	// Lógica de Desenho
+	document.addEventListener('mousedown', startDrawing);
+	document.addEventListener('mousemove', draw);
+	document.addEventListener('mouseup', stopDrawing);
+
+	function startDrawing(e) {
+		if (!document.getElementById('draw-canvas').classList.contains('active') || e.target.id !== 'draw-canvas') return;
+		drawing = true;
+		ctx.beginPath();
+		ctx.moveTo(e.offsetX, e.offsetY);
+	}
+
+	function draw(e) {
+		if (!drawing || currentTool === 'bucket') return;
+		
+		const size = document.getElementById('tool-size').value;
+		const color = document.getElementById('tool-color').value;
+		
+		// Configurações comuns
+		ctx.lineCap = 'round';
+		ctx.lineJoin = 'round';
+		ctx.lineWidth = size;
+		
+		if (currentTool === 'brush') {
+			ctx.globalAlpha = 1.0;
+			ctx.strokeStyle = color;
+			ctx.globalCompositeOperation = 'source-over';
+		} 
+		else if (currentTool === 'highlighter') {
+			ctx.globalAlpha = 0.5; // Sempre 50% de transparência
+			ctx.strokeStyle = color;
+			ctx.globalCompositeOperation = 'source-over';
+		} 
+		else if (currentTool === 'eraser') {
+			ctx.globalAlpha = 1.0;
+			ctx.globalCompositeOperation = 'destination-out';
+		}
+		
+		ctx.lineTo(e.offsetX, e.offsetY);
+		ctx.stroke();
+	}
+	
+	// Lógica do Balde de Tinta (Flood Fill)
+	function floodFill(startX, startY, fillColor) {
+		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		const targetColor = hexToRgb(fillColor);
+		const pixelData = imageData.data;
+
+		const startPos = (startY * canvas.width + startX) * 4;
+		const startColor = {
+			r: pixelData[startPos],
+			g: pixelData[startPos + 1],
+			b: pixelData[startPos + 2],
+			a: pixelData[startPos + 3]
+		};
+
+		if (Math.abs(startColor.r - targetColor.r) < 5 && 
+			Math.abs(startColor.g - targetColor.g) < 5 && 
+			Math.abs(startColor.b - targetColor.b) < 5 &&
+			startColor.a === 255) return;
+
+		const stack = [[startX, startY]];
+		while (stack.length) {
+			const [x, y] = stack.pop();
+			const pos = (y * canvas.width + x) * 4;
+
+			if (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height &&
+				pixelData[pos] === startColor.r && 
+				pixelData[pos+1] === startColor.g && 
+				pixelData[pos+2] === startColor.b && 
+				pixelData[pos+3] === startColor.a) {
+
+				pixelData[pos] = targetColor.r;
+				pixelData[pos+1] = targetColor.g;
+				pixelData[pos+2] = targetColor.b;
+				pixelData[pos+3] = 255;
+
+				stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+			}
+		}
+		ctx.putImageData(imageData, 0, 0);
+		saveState();
+	}
+
+	function matchColor(r, g, b, a, target) {
+		// Se target vier de hexToRgb ele tem r,g,b. Se vier de pixelData, comparamos com startRGBA
+		if(target.a !== undefined) {
+			return r === target.r && g === target.g && b === target.b && a === target.a;
+		}
+		return r === target.r && g === target.g && b === target.b;
+		
+		const tolerance = 10;
+		return Math.abs(r - target.r) <= tolerance && 
+			   Math.abs(g - target.g) <= tolerance && 
+			   Math.abs(b - target.b) <= tolerance && 
+			   Math.abs(a - target.a) <= tolerance;
+	}
+
+	function hexToRgb(hex) {
+		const r = parseInt(hex.slice(1, 3), 16);
+		const g = parseInt(hex.slice(3, 5), 16);
+		const b = parseInt(hex.slice(5, 7), 16);
+		return { r, g, b, a: 255 };
+	}
+
+	// Evento de clique para o Balde
+	canvas.addEventListener('mousedown', (e) => {
+		if (currentTool === 'bucket') {
+			floodFill(e.offsetX, e.offsetY, document.getElementById('tool-color').value);
+		} else {
+			drawing = true;
+			ctx.beginPath();
+			ctx.moveTo(e.offsetX, e.offsetY);
+		}
+	});
+
+	function stopDrawing() {
+		if (drawing) {
+			drawing = false;
+			saveState();
+		}
+	}
+
+	function fillCanvas() {
+		ctx.globalCompositeOperation = 'source-over';
+		ctx.fillStyle = document.getElementById('tool-color').value;
+		ctx.globalAlpha = document.getElementById('tool-opacity').value;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		saveState();
+	}
+
+	function saveState() {
+		history.push(canvas.toDataURL());
+		if (history.length > 20) history.shift();
+		redoHistory = [];
+	}
+
+	function undo() {
+		if (history.length > 1) {
+			redoHistory.push(history.pop());
+			let img = new Image();
+			img.src = history[history.length - 1];
+			img.onload = () => { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img, 0, 0); };
+		}
+	}
+
+	function redo() {
+		if (redoHistory.length > 0) {
+			let state = redoHistory.pop();
+			history.push(state);
+			let img = new Image();
+			img.src = state;
+			img.onload = () => { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img, 0, 0); };
+		}
+	}
+
+	function clearAllNotes() {
+		if (confirm("Tem certeza que deseja apagar TODAS as notas e desenhos?")) {
+			document.getElementById('notepad-content').value = "";
+			if(canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+			localStorage.removeItem('datamine_notes');
+			saveState();
+		}
+	}
 </script>
 </body>
 </html>
