@@ -303,6 +303,10 @@
 				height: 45px;
 				margin-left: 5px;
 			}
+			
+			#btn-toggle-mode {
+				display: none !important;
+			}
 
 			/* Reduz o tamanho do slider no mobile para economizar espaço */
 			#tool-size { width: 60px; }
@@ -449,8 +453,8 @@
 
 			<div class="tool-group">
 				<span>Cor:</span>
-				<input type="color" id="tool-color" value="#FFFFFF" oninput="updatePreview()">
-				<span id="hex-display" style="font-size: 11px; font-family: monospace; font-weight: bold; margin-left: 5px;">#FFFFFF</span>
+				<input type="color" id="tool-color" value="#000000" oninput="updatePreview()">
+				<span id="hex-display" style="font-size: 11px; font-family: monospace; font-weight: bold; margin-left: 5px;">#000000</span>
 			</div>
 		</div>
 
@@ -706,15 +710,13 @@
 	
 	function toggleNotepad() {
 		const notepad = document.getElementById('notepad-lightbox');
-		
-		// 1. Primeiro mostramos o container
 		notepad.style.display = 'flex';
-		
-		// 2. Aguardamos um instante (refluxo do layout) e inicializamos o canvas
-		// Isso evita que o offsetWidth seja lido como 0 ou valor impreciso
-		requestAnimationFrame(() => {
-			initCanvas();
-		});
+		// Adicione esta linha para redimensionar o canvas ao abrir:
+		if(canvas) {
+			const container = canvas.parentElement;
+			canvas.width = container.offsetWidth;
+			canvas.height = container.offsetHeight;
+		}
 	}
 
 	// Fecha o lightbox se clicar fora da caixa branca
@@ -749,17 +751,8 @@
 		canvas = document.getElementById('draw-canvas');
 		ctx = canvas.getContext('2d', { willReadFrequently: true });
 		const container = canvas.parentElement;
-		
-		// Obtém o tamanho real que o container está ocupando na tela
-		const rect = container.getBoundingClientRect();
-		
-		// Define a resolução INTERNA do canvas igual ao tamanho REAL da tela
-		// Isso mantém a proporção 1:1 e evita o pincel oval
-		canvas.width = rect.width;
-		canvas.height = rect.height;
-
-		// Se houver histórico, você pode precisar redesenhar aqui 
-		// ou apenas salvar o estado inicial
+		canvas.width = container.clientWidth;
+		canvas.height = container.clientHeight;
 		saveState();
 		updatePreview();
 	}
