@@ -177,7 +177,7 @@
 			border: none; padding: 10px; font-size: 16px; resize: none; box-sizing: border-box; z-index: 1; 
 		}
 		
-		#draw-canvas { position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none; }
+		#draw-canvas { position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none; width: 100%; height: 100%; }
 		#draw-canvas.active { pointer-events: auto; cursor: crosshair; touch-action: none; }
 
 		/* Container das ferramentas ajustado */
@@ -697,6 +697,12 @@
 	function toggleNotepad() {
 		const notepad = document.getElementById('notepad-lightbox');
 		notepad.style.display = 'flex';
+		// Adicione esta linha para redimensionar o canvas ao abrir:
+		if(canvas) {
+			const container = canvas.parentElement;
+			canvas.width = container.offsetWidth;
+			canvas.height = container.offsetHeight;
+		}
 	}
 
 	// Fecha o lightbox se clicar fora da caixa branca
