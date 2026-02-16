@@ -631,10 +631,26 @@
     });
 
     window.addEventListener('keydown', (e) => {
-        if (e.target.getAttribute('contenteditable') === 'true' || modoAtual !== 'coop') return;
-        if (e.key === "Enter") { alterarContador(-1); e.preventDefault(); }
-        else if (e.code === "Space") { alterarContador(1); e.preventDefault(); }
-    });
+        // 1. Verifica se o foco está em um campo editável ou no Bloco de Notas
+		const isEditing = e.target.getAttribute('contenteditable') === 'true' || 
+						 e.target.tagName === 'TEXTAREA' || 
+						 e.target.tagName === 'INPUT';
+
+		// Se estiver editando algo, não faz nada (permite o Enter pular linha)
+		if (isEditing) return;
+
+		// 2. Só executa os atalhos se estiver no modo COOP e NÃO estiver editando
+		if (modoAtual === 'coop') {
+			if (e.key === "Enter") { 
+				alterarContador(-1); 
+				e.preventDefault(); 
+			}
+			else if (e.code === "Space") { 
+				alterarContador(1); 
+				e.preventDefault(); 
+			}
+		}
+	});
 	
 	const container = document.getElementById('pvp-grid');
 
