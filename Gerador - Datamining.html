@@ -24,6 +24,7 @@
 
         .painel-controle {
             background-color: var(--window-bg);
+			position: relative;
             border: var(--border-main);
             border-radius: 15px;
             padding: 25px;
@@ -133,6 +134,55 @@
         .celula, .celula-icone {
             width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; box-sizing: border-box;
         }
+		
+		/* Estilo do Botão Datamine - Baseado no arquivo Pastas */
+		.apendice-botoes {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			z-index: 10;
+		}
+
+		.btn-nav {
+			padding: 10px 15px;
+			background-color: #11806A;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-weight: bold;
+			font-size: 12px;
+			text-align: center;
+			text-transform: uppercase;
+			box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+		}
+
+		/* Estilo do Modal - Baseado no arquivo Roletas */
+		#modal-datamine {
+			display: none;
+			position: fixed;
+			top: 0; left: 0; width: 100%; height: 100%;
+			background: rgba(0,0,0,0.85);
+			z-index: 1001;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.card-resultado {
+			background: white;
+			padding: 30px;
+			border: 8px solid #000;
+			border-radius: 15px;
+			text-align: center;
+			min-width: 300px;
+		}
+
+		.resultado-coordenada {
+			font-size: 60px;
+			color: #11806A;
+			font-weight: bold;
+			margin: 20px 0;
+		}
 
         .coordenada { color: #000; font-weight: bold; font-size: 18px; }
         .celula-jogo { background-color: #11806A; border: 1px solid rgba(255,255,255,0.2); }
@@ -159,7 +209,10 @@
 </head>
 <body>
 
-<div class="painel-controle">
+<div class="painel-controle" style="position: relative;"> <div class="apendice-botoes">
+        <button class="btn-nav" onclick="abrirModalDatamine()">Datamine</button>
+    </div>
+
     <h1>Gerador de Mapa</h1>
     <div class="opcoes-grid">
         <div class="seletor-item">
@@ -193,6 +246,16 @@
 <div id="container-mapa">
     <div id="grid" class="grid-mestre"></div>
 </div>
+
+<div id="modal-datamine" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1001; justify-content: center; align-items: center;" onclick="fecharModalDatamine()">
+    <div class="card-resultado" style="background: white; padding: 30px; border: 8px solid #000; border-radius: 15px; text-align: center; min-width: 300px;" onclick="event.stopPropagation()">
+        <h3 style="margin-top: 0; text-transform: uppercase; font-family: Arial;">Gerar Datamine</h3>
+        <div id="res-coordenada" style="font-size: 60px; color: #11806A; font-weight: bold; margin: 20px 0; font-family: Arial;">-</div>
+        <button class="btn-gerar" onclick="gerarCoordenadaAleatoria()">Gerar</button>
+    </div>
+</div>
+
+</body>
 
 <script>
     let modoAtual = 'pvp';
@@ -499,11 +562,42 @@
 		}
 		if (!sucesso) gerarMapa();
 	}
+	
+	// Variável global para armazenar o tamanho do último grid gerado
+	let ultimoTamanhoGerado = 5; 
 
-	function gerarMapa() {
+	// Atualize a sua função gerarMapa() original para salvar o tamanho:
+	// No final da função gerarMapa(), adicione: ultimoTamanhoGerado = config.tamanho;
+
+	function abrirModalDatamine() {
+		document.getElementById('modal-datamine').style.display = 'flex';
+		document.getElementById('res-coordenada').innerText = '-';
+	}
+
+	function fecharModalDatamine() {
+		document.getElementById('modal-datamine').style.display = 'none';
+	}
+
+	function gerarCoordenadaAleatoria() {
+		const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			
+		// Sorteia uma letra dentro do limite do tamanho do grid
+		const indiceLetra = Math.floor(Math.random() * ultimoTamanhoGerado);
+		const letraSorteada = letras[indiceLetra];
+			
+		// Sorteia um número de 1 até o tamanho do grid
+		const numeroSorteado = Math.floor(Math.random() * ultimoTamanhoGerado) + 1;
+			
+		document.getElementById('res-coordenada').innerText = letraSorteada + numeroSorteado;
+	}
+
+function gerarMapa() {
 		const conf = CONFIG[modoAtual][dificuldadeAtual], tamanho = conf.tamanho;
 		const container = document.getElementById('container-mapa'), gridBase = document.getElementById('grid');
 		
+		// MODIFICAÇÃO: Atualiza a variável global para que o Datamine saiba o limite do sorteio
+		ultimoTamanhoGerado = tamanho; 
+
 		container.style.display = 'block'; 
 		gridBase.innerHTML = '';
 		
