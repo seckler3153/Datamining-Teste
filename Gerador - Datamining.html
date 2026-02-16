@@ -155,6 +155,11 @@
 			text-align: center;
 			text-transform: uppercase;
 			box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+			transition: background-color 0.2s;
+		}
+		
+		.btn-nav:hover {
+			background-color: #0d6352;
 		}
 
 		/* Estilo do Modal - Baseado no arquivo Roletas */
@@ -197,6 +202,25 @@
 			.opcoes-grid { grid-template-columns: 1fr; gap: 10px; }
 			.seletor-item.full-width { grid-column: span 1; }
 			.color-grid { grid-template-columns: repeat(4, 1fr); }
+			
+			.apendice-botoes {
+				position: static;
+				display: flex;
+				justify-content: center;
+				margin-bottom: 20px;
+				width: 100%;
+			}
+			
+			.btn-nav {
+				width: 100%;
+				max-width: 300px;
+				padding: 15px;
+				font-size: 14px;
+			}
+
+			.painel-controle {
+				padding: 15px;
+			}
 
 			/* No mobile, mantemos o tamanho das células fixo em 60px para não desalinharem do Canvas */
 			/* O usuário navegará pelo mapa via scroll lateral, mantendo a precisão das linhas */
