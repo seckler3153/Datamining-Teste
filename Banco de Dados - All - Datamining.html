@@ -182,12 +182,19 @@
 
 		/* Container das ferramentas ajustado */
 		.paint-toolbar { 
-			display: none; background: #f4f4f4; border: 2px solid #000; padding: 5px 10px; 
-			margin-top: 5px; gap: 10px; flex-wrap: nowrap; align-items: center; justify-content: flex-start;
+			display: none; background: #f4f4f4; border: 2px solid #000; padding: 10px; 
+			margin-top: 5px; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: center;
 		}
 		.paint-toolbar.visible { display: flex; }
 
-		.tool-group { display: flex; align-items: center; gap: 5px; font-size: 11px; font-family: sans-serif; white-space: nowrap; }
+		.tool-group { display: flex; align-items: center; gap: 8px; font-size: 11px; font-family: sans-serif; }
+		
+		#tool-size { width: 80px; cursor: pointer; }
+		
+		.action-group {
+			display: flex;
+			gap: 5px;
+		}
 
 		/* Cor de seleção solicitada para os botões ativos */
 		.tool-btn.active { 
@@ -275,6 +282,20 @@
                 min-height: 250px;
                 flex-direction: row; 
             }
+			
+			.paint-toolbar {
+				padding: 5px;
+				gap: 5px;
+			}
+			
+			.brush-preview-container {
+				min-width: 45px;
+				height: 45px;
+				margin-left: 5px;
+			}
+
+			/* Reduz o tamanho do slider no mobile para economizar espaço */
+			#tool-size { width: 60px; }
 
             .sidebar { width: 25% !important; }
             .editable-num { font-size: 20px !important; width: 100% !important; }
@@ -405,20 +426,19 @@
 			</div>
 
 			<div class="tool-group">
-				<span>Tamanho:</span>
+				<span>Tam:</span>
 				<input type="range" id="tool-size" min="5" max="50" value="10" oninput="updatePreview()">
+				<div class="brush-preview-container" title="Prévia">
+					<div id="brush-preview" style="width: 10px; height: 10px;"></div>
+				</div>
 			</div>
 
-			<div class="brush-preview-container" title="Prévia da Ponta">
-				<div id="brush-preview" style="width: 10px; height: 10px;"></div>
-			</div>
-
-			<div class="tool-group" style="margin-left: 15px;">
+			<div class="tool-group">
 				<span>Cor:</span>
 				<input type="color" id="tool-color" value="#000000" oninput="updatePreview()">
 			</div>
 
-			<div class="tool-group">
+			<div class="tool-group action-group">
 				<button class="tool-btn" onclick="undo()">Desfazer</button>
 				<button class="tool-btn" onclick="redo()">Refazer</button>
 			</div>
@@ -714,12 +734,9 @@
 		if (currentTool === 'eraser') {
 			preview.style.backgroundColor = 'transparent';
 			preview.style.border = '1px solid #000';
-			preview.style.opacity = '1';
 		} else {
 			preview.style.backgroundColor = color;
 			preview.style.border = 'none';
-			// Aplica a opacidade na prévia se for marca-texto
-			preview.style.opacity = (currentTool === 'highlighter') ? 0.5 : 1;
 		}
 	}
 
