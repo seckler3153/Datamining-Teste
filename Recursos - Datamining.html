@@ -894,38 +894,45 @@
 
 			if (valorSorteado && valorSorteado !== '-') {
 				const numeroFormatado = valorSorteado.padStart(2, '0');
-        
-				// Se for o botão Único (A), buscamos em TODO o conteúdo (exceto teclas)
-				// Se for outro botão, buscamos apenas na seção pai específica
+				
 				let containerBusca;
+				// Se for Único (A), busca em tudo exceto teclas
 				if (idBase === 'cat-unico') {
 					containerBusca = document.getElementById(`conteudo-${modoAtual}`);
 				} else {
+					// Para Teclas ou as outras categorias, busca apenas dentro do bloco específico
 					containerBusca = document.getElementById(`${idBase}-${modoAtual}`);
 				}
 
-				const blocos = containerBusca.querySelectorAll('.secao-dificuldade');
-				let alvo = null;
+				if (containerBusca) {
+					const blocos = containerBusca.querySelectorAll('.secao-dificuldade');
+					let alvo = null;
 
-				blocos.forEach(bloco => {
-					const subtitulo = bloco.querySelector('.subtitulo-dif');
-					// Ignora a seção de teclas na busca global do botão "A"
-					const estaNasTeclas = bloco.closest('.categoria-bloco').id.includes('teclas');
-            
-					if (subtitulo && subtitulo.innerText.startsWith(numeroFormatado) && !estaNasTeclas) {
-						alvo = bloco;
+					blocos.forEach(bloco => {
+						const subtitulo = bloco.querySelector('.subtitulo-dif');
+						
+						// Lógica para evitar conflito: se for o botão 'A', não entra em teclas.
+						// Se for o botão 'T', ele agora vai buscar corretamente dentro do bloco de teclas.
+						const estaNasTeclas = bloco.closest('.categoria-bloco').id.includes('teclas');
+						
+						if (subtitulo && subtitulo.innerText.startsWith(numeroFormatado)) {
+							if (idBase === 'cat-unico' && !estaNasTeclas) {
+								alvo = bloco;
+							} else if (idBase !== 'cat-unico') {
+								alvo = bloco;
+							}
+						}
+					});
+
+					if (alvo) {
+						alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+						document.querySelector('.apendice-sorteio').classList.remove('aberto');
+						return;
 					}
-				});
-
-				if (alvo) {
-					// Rola a página para centralizar o bloco inteiro (título + imagem)
-					alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
-					document.querySelector('.apendice-sorteio').classList.remove('aberto');
-					return;
 				}
 			}
 
-			// Fallback: vai para o topo da categoria se não houver número
+			// Fallback: se não houver sorteio ou não achar o número, vai para o topo da seção
 			const elementoRaiz = document.getElementById(`${idBase}-${modoAtual}`);
 			if (elementoRaiz) {
 				elementoRaiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
