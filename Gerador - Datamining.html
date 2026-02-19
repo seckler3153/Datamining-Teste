@@ -311,7 +311,7 @@
     };
 
     window.onload = () => renderizarDificuldades();
-    function setModo(val) { modoAtual = val; atualizarVisualBotoes('grid-modo', val); renderizarDificuldades(); }
+    function setModo(val) { modoAtual = val; dificuldadeAtual = 'normal'; atualizarVisualBotoes('grid-modo', val); renderizarDificuldades(); }
     function renderizarDificuldades() {
         const gridDif = document.getElementById('grid-dificuldade');
         gridDif.innerHTML = '';
