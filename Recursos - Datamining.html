@@ -1435,11 +1435,25 @@
         }
 
         function resetarTudo() {
-            ['C', 'I', 'R', 'FD', 'A', 'T'].forEach(tipo => {
-                const el = document.getElementById(`res-${tipo}`);
-                if(el) el.innerText = '-';
-            });
-        }
+			// 1. Reseta os valores numéricos dos sorteios
+			['C', 'I', 'R', 'FD', 'A', 'T'].forEach(tipo => {
+				const el = document.getElementById(`res-${tipo}`);
+				if(el) el.innerText = '-';
+			});
+
+			// 2. Esconde todas as imagens e textos (spoiler)
+			document.querySelectorAll('.secao-dificuldade').forEach(secao => {
+				const img = secao.querySelector('.imagem-regra');
+				const btn = secao.querySelector('.btn-spoiler');
+				const subtitulo = secao.querySelector('.subtitulo-dif');
+
+				// Mantém os recursos "00" (exemplo) sempre visíveis
+				if (subtitulo && !subtitulo.innerText.startsWith("00")) {
+					if (img) img.classList.remove('revelada');
+					if (btn) btn.innerText = 'Mostrar';
+				}
+			});
+		}
 		
 		function toggleSorteio() {
 			const apendice = document.querySelector('.apendice-sorteio');
