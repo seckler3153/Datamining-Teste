@@ -982,8 +982,8 @@
 		// Função para alternar o spoiler
 		function toggleSpoiler(btn) {
 			// Encontra a imagem dentro do mesmo bloco "secao-dificuldade"
-			const container = btn.closest('.secao-dificuldade');
-			const img = container.querySelector('.imagem-regra');
+			const secao = btn.closest('.secao-dificuldade');
+			const img = secao.querySelector('.imagem-regra');
 			
 			if (img.classList.contains('revelada')) {
 				img.classList.remove('revelada');
