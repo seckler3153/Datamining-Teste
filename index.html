@@ -183,7 +183,24 @@
 </div>
 
 <script>
+    // Variável para controlar se a senha já foi inserida com sucesso
+    let recursosAutorizados = false;
+    const SENHA_RECURSOS = "16053153#";
+
     function showCommand(id, btn) {
+        // Se tentar acessar recursos e ainda não tiver autorizado
+        if (id === 'recursos' && !recursosAutorizados) {
+            const tentativa = prompt("Digite a senha de acesso aos Recursos:");
+            
+            if (tentativa === SENHA_RECURSOS) {
+                recursosAutorizados = true; // Libera o acesso até o F5
+            } else {
+                alert("Senha incorreta! Acesso negado.");
+                return; // Interrompe a função e não abre a aba
+            }
+        }
+
+        // Lógica original de troca de abas
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
@@ -193,7 +210,10 @@
         if (id === 'welcome') {
             document.getElementById('welcome').classList.add('active');
         } else {
-            document.getElementById('frame-' + id).classList.add('active');
+            const targetFrame = document.getElementById('frame-' + id);
+            if (targetFrame) {
+                targetFrame.classList.add('active');
+            }
         }
     }
 
