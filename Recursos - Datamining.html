@@ -100,6 +100,16 @@
             margin-bottom: 5px !important;
             background-color: #d9534f;
         }
+		
+		/* Define a cor base vermelha e remove efeitos conflitantes */
+		.btn-reset {
+			background-color: #d9534f !important;
+		}
+
+		/* Efeito de hover: um tom de vermelho mais escuro, sem ficar preto */
+		.btn-reset:hover {
+			background-color: #c9302c !important;
+		}
 
         .nav-container {
             display: grid;
@@ -276,7 +286,7 @@
 		}
 
 		.btn-acao.btn-nav-modo:hover {
-			background-color: #0e6b59;
+			background-color: #0d6352;
 		}
 
 		/* Opcional: Ajuste para os botões de navegação ficarem simétricos */
@@ -1356,7 +1366,7 @@
         <h2>Recursos Aleatórios</h2>
         
 		<button class="btn-acao btn-nav-modo" onclick="trocarModoManual()">Mudar Modo</button>
-        <button class="btn-acao" onclick="resetarTudo()">Resetar Tudo</button>
+        <button class="btn-acao btn-reset" onclick="resetarTudo()">Resetar Tudo</button>
 
         <div class="grid-sorteios">
             <div class="coluna-sorteio">
