@@ -160,6 +160,14 @@
             margin-bottom: 40px;
             align-items: flex-start;
         }
+		
+		.header-recurso {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 100%;
+			flex-direction: row-reverse;
+		}
 
         .imagem-regra {
             width: 100%;
@@ -167,11 +175,33 @@
             object-fit: contain;
             border: none;
             box-shadow: none;
-            cursor: zoom-in;
+            transition: filter 0.3s ease;
+			filter: blur(30px) grayscale(0.5); /* Totalmente desfocado por padrão */
+			cursor: pointer;
             order: 2;
             display: block;
             margin: 0 auto;
         }
+		
+		.imagem-regra.revelada {
+			filter: blur(0) grayscale(0);
+		}
+		
+		.btn-spoiler {
+			padding: 6px 15px;
+			background-color: #000;
+			color: #fff;
+			border: 2px solid #000;
+			border-radius: 5px;
+			cursor: pointer;
+			font-weight: bold;
+			font-size: 12px;
+			text-transform: uppercase;
+		}
+		
+		.btn-spoiler:hover {
+			background-color: #333;
+		}
 
         .subtitulo-dif {
             background-color: #f0f0f0;
@@ -299,20 +329,29 @@
             <div id="cat-ex-pvp" class="categoria-bloco">
                 <div class="titulo-secao">Recurso de Exemplo</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">00 - Tacky</div>
-                    <img src="Recursos PvP (0).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">00 - Tacky</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (0).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
             </div>
 			<div id="cat-comuns-pvp" class="categoria-bloco">
                 <div class="titulo-secao">Recursos Comuns</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">01 - Cookie</div>
-                    <img src="Recursos PvP (1).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">01 - Cookie</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (1).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">02 - Adware</div>
-                    <img src="Recursos PvP (2).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">02 - Adware</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (0).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
                 <div class="secao-dificuldade">
                     <div class="subtitulo-dif">03 - Tecla Home</div>
                     <img src="Recursos PvP (3).png" class="imagem-regra" onclick="expandirImagem(this.src)">
@@ -937,6 +976,30 @@
 			if (elementoRaiz) {
 				elementoRaiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
 				document.querySelector('.apendice-sorteio').classList.remove('aberto');
+			}
+		}
+		
+		// Função para alternar o spoiler
+		function toggleSpoiler(btn) {
+			// Encontra a imagem dentro do mesmo bloco "secao-dificuldade"
+			const container = btn.closest('.secao-dificuldade');
+			const img = container.querySelector('.imagem-regra');
+			
+			if (img.classList.contains('revelada')) {
+				img.classList.remove('revelada');
+				btn.innerText = 'Mostrar';
+			} else {
+				img.classList.add('revelada');
+				btn.innerText = 'Esconder';
+			}
+		}
+
+		// Nova função de zoom (substitua o onclick da imagem por esta)
+		function expandirImagemSeRevelada(img) {
+			if (img.classList.contains('revelada')) {
+				expandirImagem(img.src);
+			} else {
+				alert("Clique em 'Mostrar' para ver o recurso antes de expandir.");
 			}
 		}
 
