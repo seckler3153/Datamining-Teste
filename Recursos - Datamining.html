@@ -214,6 +214,18 @@
             font-size: 14px;
             order: 1;
         }
+		
+		.texto-spoiler {
+			filter: blur(5px);
+			transition: filter 0.3s ease;
+			user-select: none; /* Evita que o texto seja lido ao selecionar */
+		}
+
+		/* Quando a imagem for revelada, o texto também limpa */
+		.secao-dificuldade:has(.revelada) .texto-spoiler {
+			filter: blur(0);
+			user-select: auto;
+		}
 
         .hidden { display: none; }
 
@@ -327,501 +339,1014 @@
 
         <div id="conteudo-pvp">
             <div id="cat-ex-pvp" class="categoria-bloco">
-                <div class="titulo-secao">Recurso de Exemplo</div>
-                <div class="secao-dificuldade">
-					<div class="header-recurso">
+				<div class="titulo-secao">Recurso de Exemplo</div>
+				<div class="secao-dificuldade">
+					<div class="header-recurso" style="justify-content: flex-end;">
 						<div class="subtitulo-dif">00 - Tacky</div>
-						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
-					</div>
-					<img src="Recursos PvP (0).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+						</div>
+					<img src="Recursos PvP (0).png" class="imagem-regra revelada" onclick="expandirImagem(this.src)">
 				</div>
-            </div>
+			</div>
 			<div id="cat-comuns-pvp" class="categoria-bloco">
                 <div class="titulo-secao">Recursos Comuns</div>
                 <div class="secao-dificuldade">
 					<div class="header-recurso">
-						<div class="subtitulo-dif">01 - Cookie</div>
+						<div class="subtitulo-dif">
+							01 - <span class="texto-spoiler">Cookie</span>
+						</div>
 						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
 					</div>
 					<img src="Recursos PvP (1).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
 				</div>
                 <div class="secao-dificuldade">
 					<div class="header-recurso">
-						<div class="subtitulo-dif">02 - Adware</div>
+						<div class="subtitulo-dif">
+							02 - <span class="texto-spoiler">Adware</span>
+						</div>
 						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
 					</div>
 					<img src="Recursos PvP (2).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
 				</div>
                 <div class="secao-dificuldade">
 					<div class="header-recurso">
-						<div class="subtitulo-dif">03 - Tecla Home</div>
+						<div class="subtitulo-dif">
+							03 - <span class="texto-spoiler">Tecla Home</span>
+						</div>
 						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
 					</div>
 					<img src="Recursos PvP (3).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
 				</div>
 				<div class="secao-dificuldade">
 					<div class="header-recurso">
-						<div class="subtitulo-dif">04 - Caixa de Spam</div>
+						<div class="subtitulo-dif">
+							04 - <span class="texto-spoiler">Caixa de Spam</span>
+						</div>
 						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
 					</div>
 					<img src="Recursos PvP (4).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
 				</div>
                 <div class="secao-dificuldade">
 					<div class="header-recurso">
-						<div class="subtitulo-dif">05 - Criptomoeda de Platina</div>
+						<div class="subtitulo-dif">
+							05 - <span class="texto-spoiler">Criptomoeda de Platina</span>
+						</div>
 						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
 					</div>
 					<img src="Recursos PvP (5).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
 				</div>
                 <div class="secao-dificuldade">
 					<div class="header-recurso">
-						<div class="subtitulo-dif">06 - Flag</div>
+						<div class="subtitulo-dif">
+							06 - <span class="texto-spoiler">Flag</span>
+						</div>
 						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
 					</div>
 					<img src="Recursos PvP (6).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
 				</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">07 - Firewall</div>
-                    <img src="Recursos PvP (7).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							07 - <span class="texto-spoiler">Firewall</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (7).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">08 - E-Loja</div>
-                    <img src="Recursos PvP (8).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							08 - <span class="texto-spoiler">E-Loja</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (8).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">09 - Reboot</div>
-                    <img src="Recursos PvP (9).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							09 - <span class="texto-spoiler">Reboot</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (9).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">10 - Machine Learning</div>
-                    <img src="Recursos PvP (10).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							10 - <span class="texto-spoiler">Machine Learning</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (10).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">11 - Cashback</div>
-                    <img src="Recursos PvP (11).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							11 - <span class="texto-spoiler">Cashback</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (11).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">12 - Cooler</div>
-                    <img src="Recursos PvP (12).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							12 - <span class="texto-spoiler">Cooler</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (12).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
 				<div class="secao-dificuldade">
-                    <div class="subtitulo-dif">13 - Tecla Shift</div>
-                    <img src="Recursos PvP (13).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							13 - <span class="texto-spoiler">Tecla Shift</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (13).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">014 - Compartilhamento</div>
-                    <img src="Recursos PvP (14).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							14 - <span class="texto-spoiler">Compartilhamento</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (14).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">15 - Recarregar</div>
-                    <img src="Recursos PvP (15).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							15 - <span class="texto-spoiler">Recarregar</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (15).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">16 - Glitch</div>
-                    <img src="Recursos PvP (16).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							16 - <span class="texto-spoiler">Glitch</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (16).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">17 - Espelhar a Tela</div>
-                    <img src="Recursos PvP (17).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							17 - <span class="texto-spoiler">Espelhar a Tela</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (17).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">18 - Phishing</div>
-                    <img src="Recursos PvP (18).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							18 - <span class="texto-spoiler">Phishing</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (18).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
             </div>
             <div id="cat-incomuns-pvp" class="categoria-bloco">
                 <div class="titulo-secao">Recursos Incomuns</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">19 - Blacklist</div>
-                    <img src="Recursos PvP (19).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							19 - <span class="texto-spoiler">Blacklist</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (19).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
+                <div class="secao-dificuldade">
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							20 - <span class="texto-spoiler">Enviar à Lixeira</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (20).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
+                <div class="secao-dificuldade">
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							21 - <span class="texto-spoiler">Patch Notes</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (21).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
+                <div class="secao-dificuldade">
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							22 - <span class="texto-spoiler">Tecla End</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (22).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
+                <div class="secao-dificuldade">
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							23 - <span class="texto-spoiler">Tecla Page Up</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (23).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
+                <div class="secao-dificuldade">
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							24 - <span class="texto-spoiler">Tecla Page Down</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (24).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
+				</div>
+                <div class="secao-dificuldade">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							25 - <span class="texto-spoiler">Tecla Adiantar</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (25).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">20 - Enviar à Lixeira</div>
-                    <img src="Recursos PvP (20).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							26 - <span class="texto-spoiler">Tecla Retroceder</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (26).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">21 - Patch Notes</div>
-                    <img src="Recursos PvP (21).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							27 - <span class="texto-spoiler">Aumentar a Resolução</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (27).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">22 - Tecla End</div>
-                    <img src="Recursos PvP (22).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							28 - <span class="texto-spoiler">Malware</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (28).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">23 - Tecla Page Up</div>
-                    <img src="Recursos PvP (23).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							29 - <span class="texto-spoiler">Conversão de Formato de Recursos</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (29).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">24 - Tecla Page Down</div>
-                    <img src="Recursos PvP (24).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
-                <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">25 - Tecla Adiantar</div>
-                    <img src="Recursos PvP (25).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
-                <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">26 - Tecla Retroceder</div>
-                    <img src="Recursos PvP (26).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
-                <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">27 - Aumentar a Resolução</div>
-                    <img src="Recursos PvP (27).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
-                <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">28 - Malware</div>
-                    <img src="Recursos PvP (28).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
-                <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">29 - Conversão de Formato de Recursos</div>
-                    <img src="Recursos PvP (29).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
-                <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">30 - Varredura</div>
-                    <img src="Recursos PvP (30).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							30 - <span class="texto-spoiler">Varredura</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (30).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
             </div>
             <div id="cat-raros-pvp" class="categoria-bloco">
                 <div class="titulo-secao">Recursos Raros</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">31 - Estabilizador</div>
-                    <img src="Recursos PvP (31).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							31 - <span class="texto-spoiler">Estabilizador</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (31).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">32 - Arquivo Compactado</div>
-                    <img src="Recursos PvP (32).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							32 - <span class="texto-spoiler">Arquivo Compactado</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (32).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">33 - Tecla Esc</div>
-                    <img src="Recursos PvP (33).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							33 - <span class="texto-spoiler">Tecla Esc</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (33).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">34 - Tecla Pause Break</div>
-                    <img src="Recursos PvP (34).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							34 - <span class="texto-spoiler">Tecla Pause Break</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (34).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">35 - VPN</div>
-                    <img src="Recursos PvP (35).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							35 - <span class="texto-spoiler">VPN</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (35).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">36 - Backbone</div>
-                    <img src="Recursos PvP (36).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							36 - <span class="texto-spoiler">Backbone</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (36).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">37 - Ransomware</div>
-                    <img src="Recursos PvP (37).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							37 - <span class="texto-spoiler">Ransomware</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (37).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">38 - Troca de Memória RAM</div>
-                    <img src="Recursos PvP (38).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							38 - <span class="texto-spoiler">Troca de Memória RAM</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (38).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">39 - Proteção de DNS</div>
-                    <img src="Recursos PvP (39).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							39 - <span class="texto-spoiler">Proteção de DNS</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (39).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">40 - Mouse</div>
-                    <img src="Recursos PvP (40).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							40 - <span class="texto-spoiler">Mouse</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (40).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
             </div>
             <div id="cat-fd-pvp" class="categoria-bloco">
                 <div class="titulo-secao">Recursos de Fontes Desconhecidas</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">41 - Arquivo Pesado</div>
-                    <img src="Recursos PvP (41).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							41 - <span class="texto-spoiler">Arquivo Pesado</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (41).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">42 - Datamine Portátil</div>
-                    <img src="Recursos PvP (42).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							42 - <span class="texto-spoiler">Datamine Portátil</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (42).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">43 - Arquivo Corrompido</div>
-                    <img src="Recursos PvP (43).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							43 - <span class="texto-spoiler">Arquivo Corrompido</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (43).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">44 - Bet Online</div>
-                    <img src="Recursos PvP (44).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							44 - <span class="texto-spoiler">Bet Online</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (44).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">45 - Datamine Dourada</div>
-                    <img src="Recursos PvP (45).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							45 - <span class="texto-spoiler">Datamine Dourada</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (45).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
             </div>
             <div id="cat-unico-pvp" class="categoria-bloco">
                 <div class="titulo-secao">Recurso Único</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">46 - Arquivo Vital</div>
-                    <img src="Recursos PvP (46).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							46 - <span class="texto-spoiler">Arquivo Vital</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (46).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
             </div> <hr style="border: 0; border-top: 5px dashed #000; margin-bottom: 60px;">
 			<div id="cat-teclas-pvp" class="categoria-bloco">
 				<div class="titulo-secao">Recursos Teclas</div>
 				<div class="secao-dificuldade">
-					<div class="subtitulo-dif">01 - Tecla Home</div>
-					<img src="Recursos PvP (3).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							01 - <span class="texto-spoiler">Tecla Home</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (3).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
 				</div>
 				<div class="secao-dificuldade">
-                    <div class="subtitulo-dif">02 - Tecla Shift</div>
-                    <img src="Recursos PvP (13).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							02 - <span class="texto-spoiler">Tecla Shift</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (13).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
 				<div class="secao-dificuldade">
-                    <div class="subtitulo-dif">03 - Tecla End</div>
-                    <img src="Recursos PvP (22).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							03 - <span class="texto-spoiler">Tecla End</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (22).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">04 - Tecla Page Up</div>
-                    <img src="Recursos PvP (23).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							04 - <span class="texto-spoiler">Tecla Page Up</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (23).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">05 - Tecla Page Down</div>
-                    <img src="Recursos PvP (24).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							05 - <span class="texto-spoiler">Tecla Page Down</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (24).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">06 - Tecla Adiantar</div>
-                    <img src="Recursos PvP (25).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							06 - <span class="texto-spoiler">Tecla Adiantar</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (25).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">07 - Tecla Retroceder</div>
-                    <img src="Recursos PvP (26).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							07 - <span class="texto-spoiler">Tecla Retroceder</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (26).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
 				<div class="secao-dificuldade">
-                    <div class="subtitulo-dif">08 - Tecla Esc</div>
-                    <img src="Recursos PvP (33).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							08 - <span class="texto-spoiler">Tecla Esc</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (33).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">09 - Tecla Pause Break</div>
-                    <img src="Recursos PvP (34).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							09 - <span class="texto-spoiler">Tecla Pause Break</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos PvP (34).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
 			</div>
         </div>
 
         <div id="conteudo-coop" class="hidden">
             <div id="cat-ex-coop" class="categoria-bloco">
-                <div class="titulo-secao">Recurso de Exemplo</div>
-                <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">00 - Tacky</div>
-                    <img src="Recursos Coop (0).png" class="imagem-regra" onclick="expandirImagem(this.src)">
-                </div>
-            </div>
+				<div class="titulo-secao">Recurso de Exemplo</div>
+				<div class="secao-dificuldade">
+					<div class="header-recurso" style="justify-content: flex-end;">
+						<div class="subtitulo-dif">00 - Tacky</div>
+						</div>
+					<img src="Recursos Coop (0).png" class="imagem-regra revelada" onclick="expandirImagem(this.src)">
+				</div>
+			</div>
 			<div id="cat-comuns-coop" class="categoria-bloco">
                 <div class="titulo-secao">Recursos Comuns</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">01 - Cookie</div>
-                    <img src="Recursos Coop (1).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							01 - <span class="texto-spoiler">Cookie</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (1).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">02 - Adware</div>
-                    <img src="Recursos Coop (2).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							02 - <span class="texto-spoiler">Adware</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (2).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">03 - Tecla Home</div>
-                    <img src="Recursos Coop (3).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							03 - <span class="texto-spoiler">Tecla Home</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (3).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">04 - Criptomoeda de Platina</div>
-                    <img src="Recursos Coop (4).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							04 - <span class="texto-spoiler">Criptomoeda de Platina</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (4).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">05 - Firewall</div>
-                    <img src="Recursos Coop (5).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							05 - <span class="texto-spoiler">Firewall</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (5).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">06 - Recarregar</div>
-                    <img src="Recursos Coop (6).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							06 - <span class="texto-spoiler">Recarregar</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (6).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">07 - Flag</div>
-                    <img src="Recursos Coop (7).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							07 - <span class="texto-spoiler">Flag</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (7).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">08 - E-Loja</div>
-                    <img src="Recursos Coop (8).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							08 - <span class="texto-spoiler">E-Loja</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (8).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">09 - Atalho de Programa</div>
-                    <img src="Recursos Coop (9).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							09 - <span class="texto-spoiler">Atalho de Programa</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (9).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">10 - Spyware</div>
-                    <img src="Recursos Coop (10).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							10 - <span class="texto-spoiler">Spyware</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (10).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">11 - Conexão em LAN</div>
-                    <img src="Recursos Coop (11).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							11 - <span class="texto-spoiler">Conexão em LAN</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (11).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">12 - Compartilhamento</div>
-                    <img src="Recursos Coop (12).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							12 - <span class="texto-spoiler">Compartilhamento</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (12).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
 				<div class="secao-dificuldade">
-                    <div class="subtitulo-dif">13 - Machine Learning</div>
-                    <img src="Recursos Coop (13).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							13 - <span class="texto-spoiler">Machine Learning</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (13).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">14 - Reboot</div>
-                    <img src="Recursos Coop (14).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							14 - <span class="texto-spoiler">Reboot</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (14).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">15 - Cashback</div>
-                    <img src="Recursos Coop (15).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							15 - <span class="texto-spoiler">Cashback</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (15).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
             </div>
             <div id="cat-incomuns-coop" class="categoria-bloco">
                 <div class="titulo-secao">Recursos Incomuns</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">16 - Tecla Page Up</div>
-                    <img src="Recursos Coop (16).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							16 - <span class="texto-spoiler">Tecla Page Up</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (16).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">17 - Tecla Page Down</div>
-                    <img src="Recursos Coop (17).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							17 - <span class="texto-spoiler">Tecla Page Down</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (17).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">18 - Tecla Adiantar</div>
-                    <img src="Recursos Coop (18).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							18 - <span class="texto-spoiler">Tecla Adiantar</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (18).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">19 - Tecla Retroceder</div>
-                    <img src="Recursos Coop (19).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							19 - <span class="texto-spoiler">Tecla Retroceder</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (19).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">20 - Conversão de Formato de Recursos</div>
-                    <img src="Recursos Coop (20).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							20 - <span class="texto-spoiler">Conversão de Formato de Recursos</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (20).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">21 - Mover Arquivo Entre Pastas</div>
-                    <img src="Recursos Coop (21).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							21 - <span class="texto-spoiler">Mover Arquivo Entre Pastas</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (21).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">22 - Hyperlink</div>
-                    <img src="Recursos Coop (22).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							22 - <span class="texto-spoiler">Hyperlink</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (22).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">23 - Tecla Shift</div>
-                    <img src="Recursos Coop (23).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							23 - <span class="texto-spoiler">Tecla Shift</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (23).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">24 - Aumentar a Resolução</div>
-                    <img src="Recursos Coop (24).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							24 - <span class="texto-spoiler">Aumentar a Resolução</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (24).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">25 - Patch Notes</div>
-                    <img src="Recursos Coop (25).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							25 - <span class="texto-spoiler">Patch Notes</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (25).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">26 - Back Up</div>
-                    <img src="Recursos Coop (26).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							26 - <span class="texto-spoiler">Backup</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (26).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">27 - Varredura</div>
-                    <img src="Recursos Coop (27).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							27 - <span class="texto-spoiler">Varredura</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (27).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
             </div>
             <div id="cat-raros-coop" class="categoria-bloco">
                 <div class="titulo-secao">Recursos Raros</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">28 - Alterar Código Binário</div>
-                    <img src="Recursos Coop (28).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							28 - <span class="texto-spoiler">Alterar Código Binário</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (28).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">29 - Limpar Cache</div>
-                    <img src="Recursos Coop (29).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							29 - <span class="texto-spoiler">Limpar Cache</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (29).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">30 - Salvar o Progresso</div>
-                    <img src="Recursos Coop (30).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							30 - <span class="texto-spoiler">Salvar o Progresso</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (30).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">31 - Tecla Esc</div>
-                    <img src="Recursos Coop (31).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							31 - <span class="texto-spoiler">Tecla Esc</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (31).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">32 - Tecla Pause Break</div>
-                    <img src="Recursos Coop (32).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							32 - <span class="texto-spoiler">Tecla Pause Break</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (32).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">33 - Blacklist</div>
-                    <img src="Recursos Coop (33).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							33 - <span class="texto-spoiler">Blacklist</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (33).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">34 - Clock Rate</div>
-                    <img src="Recursos Coop (34).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							34 - <span class="texto-spoiler">Clock Rate</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (34).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">35 - Proteção de DNS</div>
-                    <img src="Recursos Coop (35).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							35 - <span class="texto-spoiler">Proteção de DNS</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (35).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">36 - Arquivo Compactado</div>
-                    <img src="Recursos Coop (36).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							36 - <span class="texto-spoiler">Arquivo Compactado</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (36).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">37 - Mouse</div>
-                    <img src="Recursos Coop (37).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							37 - <span class="texto-spoiler">Mouse</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (37).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
             </div>
             <div id="cat-fd-coop" class="categoria-bloco">
                 <div class="titulo-secao">Recursos de Fontes Desconhecidas</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">38 - Arquivo Pesado</div>
-                    <img src="Recursos Coop (38).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							38 - <span class="texto-spoiler">Arquivo Pesado</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (38).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">39 - Datamine Portátil</div>
-                    <img src="Recursos Coop (39).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							39 - <span class="texto-spoiler">Datamine Portátil</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (39).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">40 - Arquivo Corrompido</div>
-                    <img src="Recursos Coop (40).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							40 - <span class="texto-spoiler">Arquivo Corrompido</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (40).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">41 - Bet Online</div>
-                    <img src="Recursos Coop (41).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							41 - <span class="texto-spoiler">Bet Online</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (41).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">42 - Datamine Dourada</div>
-                    <img src="Recursos Coop (42).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							42 - <span class="texto-spoiler">Datamine Dourada</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (42).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
             </div>
             <div id="cat-unico-coop" class="categoria-bloco">
                 <div class="titulo-secao">Recurso Único</div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">43 - Arquivo Vital</div>
-                    <img src="Recursos Coop (43).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							43 - <span class="texto-spoiler">Arquivo Vital</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (43).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
             </div> <hr style="border: 0; border-top: 5px dashed #000; margin-bottom: 60px;">
 			<div id="cat-teclas-coop" class="categoria-bloco">
 				<div class="titulo-secao">Recursos Teclas</div>
 				<div class="secao-dificuldade">
-					<div class="subtitulo-dif">01 - Tecla Home</div>
-					<img src="Recursos Coop (3).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+					<div class="header-recurso">
+						<div class="subtitulo-dif">
+							01 - <span class="texto-spoiler">Tecla Home</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (3).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
 				</div>
 				<div class="secao-dificuldade">
-                    <div class="subtitulo-dif">02 - Tecla Page Up</div>
-                    <img src="Recursos Coop (16).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							02 - <span class="texto-spoiler">Tecla Page Up</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (16).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">03 - Tecla Page Down</div>
-                    <img src="Recursos Coop (17).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							03 - <span class="texto-spoiler">Tecla Page Down</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (17).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">04 - Tecla Adiantar</div>
-                    <img src="Recursos Coop (18).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							04 - <span class="texto-spoiler">Tecla Adiantar</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (18).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">05 - Tecla Retroceder</div>
-                    <img src="Recursos Coop (19).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							05 - <span class="texto-spoiler">Tecla Retroceder</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (19).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
 				<div class="secao-dificuldade">
-                    <div class="subtitulo-dif">06 - Tecla Shift</div>
-                    <img src="Recursos Coop (23).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							06 - <span class="texto-spoiler">Tecla Shift</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (23).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
 				<div class="secao-dificuldade">
-                    <div class="subtitulo-dif">07 - Tecla Esc</div>
-                    <img src="Recursos Coop (31).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							07 - <span class="texto-spoiler">Tecla Esc</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (31).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
                 <div class="secao-dificuldade">
-                    <div class="subtitulo-dif">08 - Tecla Pause Break</div>
-                    <img src="Recursos Coop (32).png" class="imagem-regra" onclick="expandirImagem(this.src)">
+                    <div class="header-recurso">
+						<div class="subtitulo-dif">
+							08 - <span class="texto-spoiler">Tecla Pause Break</span>
+						</div>
+						<button class="btn-spoiler" onclick="toggleSpoiler(this)">Mostrar</button>
+					</div>
+					<img src="Recursos Coop (32).png" class="imagem-regra" onclick="expandirImagemSeRevelada(this)">
                 </div>
 			</div>
         </div>
@@ -1016,11 +1541,11 @@
 		}
 
         function alternarModo() {
-            const titulo = document.getElementById('titulo-principal');
-            const pvp = document.getElementById('conteudo-pvp');
+			const titulo = document.getElementById('titulo-principal');
+			const pvp = document.getElementById('conteudo-pvp');
 			const coop = document.getElementById('conteudo-coop');
 
-            if (modoAtual === 'pvp') {
+			if (modoAtual === 'pvp') {
 				titulo.innerText = "Recursos do Modo Competitivo";
 				pvp.classList.remove('hidden');
 				coop.classList.add('hidden');
@@ -1029,6 +1554,22 @@
 				pvp.classList.add('hidden');
 				coop.classList.remove('hidden');
 			}
+
+			// --- NOVA LÓGICA PARA ESCONDER TUDO AO MUDAR DE MODO ---
+			// Seleciona todas as seções de dificuldade
+			document.querySelectorAll('.secao-dificuldade').forEach(secao => {
+				const img = secao.querySelector('.imagem-regra');
+				const btn = secao.querySelector('.btn-spoiler');
+				const subtitulo = secao.querySelector('.subtitulo-dif');
+
+				// Só aplica o reset se NÃO for o recurso "00" (Exemplo)
+				if (subtitulo && !subtitulo.innerText.startsWith("00")) {
+					if (img) img.classList.remove('revelada');
+					if (btn) btn.innerText = 'Mostrar';
+				}
+			});
+			// -------------------------------------------------------
+
 			document.querySelector('.apendice-sorteio').classList.remove('aberto');
 			resetarTudo();
 			window.scrollTo(0, 0);
