@@ -121,6 +121,74 @@
             transform: scale(2);
             transform-origin: 0 0;
         }
+		
+		
+		
+		/* Estilos para o Modal de Senha */
+		#password-modal {
+			display: none;
+			position: fixed;
+			z-index: 2000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0,0,0,0.8);
+			justify-content: center;
+			align-items: center;
+		}
+
+		.modal-content {
+			background-color: #222;
+			padding: 20px;
+			border: 2px solid var(--primary);
+			border-radius: 10px;
+			text-align: center;
+			width: 300px;
+		}
+
+		.password-container {
+			position: relative;
+			margin: 15px 0;
+		}
+
+		.password-container input {
+			width: 100%;
+			padding: 10px;
+			padding-right: 40px;
+			box-sizing: border-box;
+			background: #000;
+			border: 1px solid #555;
+			color: white;
+			font-size: 16px;
+		}
+
+		.toggle-password {
+			position: absolute;
+			right: 10px;
+			top: 50%;
+			transform: translateY(-50%);
+			cursor: pointer;
+			font-size: 20px;
+			user-select: none;
+		}
+
+		.modal-btns {
+			display: flex;
+			gap: 10px;
+			justify-content: center;
+		}
+
+		.modal-btns button {
+			padding: 8px 15px;
+			cursor: pointer;
+			border: none;
+			border-radius: 5px;
+			font-weight: bold;
+		}
+
+		.btn-confirm { background: var(--primary); color: white; }
+		.btn-cancel { background: #666; color: white; }
 
         /* AJUSTES MOBILE */
         @media (max-width: 768px) {
@@ -148,6 +216,20 @@
     </style>
 </head>
 <body>
+
+<div id="password-modal">
+    <div class="modal-content">
+        <h3 style="color: white; margin-top: 0;">Acesso Restrito</h3>
+        <div class="password-container">
+            <input type="password" id="pass-input" placeholder="Digite a senha...">
+            <span class="toggle-password" onclick="togglePass()">👁️</span>
+        </div>
+        <div class="modal-btns">
+            <button class="btn-confirm" onclick="checkPassword()">Entrar</button>
+            <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
 
 <header>
     <button class="nav-btn active" onclick="showCommand('welcome', this)">Início</button>
@@ -183,24 +265,19 @@
 </div>
 
 <script>
-    // Variável para controlar se a senha já foi inserida com sucesso
     let recursosAutorizados = false;
     const SENHA_RECURSOS = "16053153#";
+    let pendingBtn = null; // Guarda o botão clicado para ativar depois da senha
 
     function showCommand(id, btn) {
-        // Se tentar acessar recursos e ainda não tiver autorizado
         if (id === 'recursos' && !recursosAutorizados) {
-            const tentativa = prompt("Digite a senha de acesso aos Recursos:");
-            
-            if (tentativa === SENHA_RECURSOS) {
-                recursosAutorizados = true; // Libera o acesso até o F5
-            } else {
-                alert("Senha incorreta! Acesso negado.");
-                return; // Interrompe a função e não abre a aba
-            }
+            pendingBtn = btn;
+            document.getElementById('password-modal').style.display = 'flex';
+            document.getElementById('pass-input').focus();
+            return;
         }
 
-        // Lógica original de troca de abas
+        // Lógica de navegação
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
@@ -210,12 +287,44 @@
         if (id === 'welcome') {
             document.getElementById('welcome').classList.add('active');
         } else {
-            const targetFrame = document.getElementById('frame-' + id);
-            if (targetFrame) {
-                targetFrame.classList.add('active');
-            }
+            const frame = document.getElementById('frame-' + id);
+            if(frame) frame.classList.add('active');
         }
     }
+
+    function checkPassword() {
+        const input = document.getElementById('pass-input');
+        if (input.value === SENHA_RECURSOS) {
+            recursosAutorizados = true;
+            closeModal();
+            showCommand('recursos', pendingBtn);
+        } else {
+            alert("Senha Incorreta!");
+            input.value = "";
+        }
+    }
+
+    function togglePass() {
+        const input = document.getElementById('pass-input');
+        const icon = document.querySelector('.toggle-password');
+        if (input.type === "password") {
+            input.type = "text";
+            icon.textContent = "🔒";
+        } else {
+            input.type = "password";
+            icon.textContent = "👁️";
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('password-modal').style.display = 'none';
+        document.getElementById('pass-input').value = "";
+    }
+
+    // Atalho: apertar Enter para confirmar a senha
+    document.getElementById('pass-input')?.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') checkPassword();
+    });
 
     window.onload = function() {
         if (!document.querySelector('meta[name="viewport"]')) {
