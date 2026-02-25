@@ -403,9 +403,8 @@
 
 			const obterSetorDirecao = (p1, p2) => {
 				let angulo = Math.atan2(p2.r - p1.r, p2.c - p1.c) * (180 / Math.PI);
-				let norma = (angulo + 22.5) % 360;
-				if (norma < 0) norma += 360;
-				return Math.floor(norma / 45);
+				if (angulo < 0) angulo += 360;
+				return Math.floor(((angulo + 22.5) % 360) / 45);
 			};
 
 			function buscarPastaNoVetor(rInicial, cInicial, dr, dc, tamanho) {
@@ -497,17 +496,26 @@
 				if (p1.conexoes >= p1.meta) return;
 
 				if (modoLivre) {
+					// 1. Identificar setores já ocupados por conexões existentes (ex: bordas/externas)
+					let setoresOcupados = new Set();
+					p1.vizinhos.forEach(v => setoresOcupados.add(obterSetorDirecao(p1, v)));
+
+					// 2. Filtrar e ordenar candidatos por distância
 					let candidatos = pastas
 						.filter(p2 => p1 !== p2 && !p1.vizinhos.includes(p2) && p2.conexoes < p2.meta)
 						.map(p2 => ({ p2, dist: Math.hypot(p2.r - p1.r, p2.c - p1.c), setor: obterSetorDirecao(p1, p2) }))
 						.sort((a, b) => a.dist - b.dist);
 
-					let setoresOcupados = new Set();
-					p1.vizinhos.forEach(v => setoresOcupados.add(obterSetorDirecao(p1, v)));
-
 					candidatos.forEach(cand => {
+						// Regras de Ouro:
+						// - Não ultrapassar meta de conexões de P1 ou P2
+						// - Não repetir um setor (direção) já usado em P1
+						// - O setor de destino em P2 também não pode estar ocupado na perspectiva de P2
+						let setorDestino = obterSetorDirecao(cand.p2, p1); // Direção de P2 para P1
+						let setorDestinoOcupado = cand.p2.vizinhos.some(v => obterSetorDirecao(cand.p2, v) === setorDestino);
+
 						if (p1.conexoes >= p1.meta || cand.p2.conexoes >= cand.p2.meta) return;
-						if (setoresOcupados.has(cand.setor)) return;
+						if (setoresOcupados.has(cand.setor) || setorDestinoOcupado) return;
 						if (caminhoObstruido(p1, cand.p2, pastas)) return;
 
 						if (validarConexao(p1, cand.p2)) {
@@ -515,6 +523,7 @@
 							ctx.moveTo(p1.c * TAM + OFFSET + 30, p1.r * TAM + OFFSET + 30);
 							ctx.lineTo(cand.p2.c * TAM + OFFSET + 30, cand.p2.r * TAM + OFFSET + 30);
 							ctx.stroke();
+							
 							p1.conexoes++; cand.p2.conexoes++;
 							p1.vizinhos.push(cand.p2); cand.p2.vizinhos.push(p1);
 							setoresOcupados.add(cand.setor);
