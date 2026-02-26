@@ -293,6 +293,24 @@
 		.nav-container {
 			grid-template-columns: repeat(3, 1fr); /* Mantém 3 colunas para os 6 botões */
 		}
+		
+		/* Estilo para que o input pareça um texto comum */
+		.input-editavel {
+			background: transparent;
+			border: none;
+			outline: none;
+			width: 30px; /* Ajuste conforme necessário */
+			padding: 0;
+			font-family: inherit;
+			cursor: text;
+		}
+
+		/* Remove as setas de incremento em navegadores Chrome/Safari/Edge */
+		.input-editavel::-webkit-outer-spin-button,
+		.input-editavel::-webkit-inner-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
 
 		/* Responsividade (Mobile) */
 		@media (max-width: 850px) {
@@ -1369,42 +1387,42 @@
         <button class="btn-acao btn-reset" onclick="resetarTudo()">Resetar Tudo</button>
 
         <div class="grid-sorteios">
-            <div class="coluna-sorteio">
-                <div class="linha-sorteio" style="margin-bottom: 5px;">
-                    <span class="label-sorteio">C:</span>
-                    <span id="res-C" class="resultado-sorteio">-</span>
-                    <button class="btn-sortear" onclick="sortear('C')">Sortear</button>
-                </div>
-                <div class="linha-sorteio" style="margin-bottom: 5px;">
-                    <span class="label-sorteio">I:</span>
-                    <span id="res-I" class="resultado-sorteio">-</span>
-                    <button class="btn-sortear" onclick="sortear('I')">Sortear</button>
-                </div>
-                <div class="linha-sorteio">
-                    <span class="label-sorteio">R:</span>
-                    <span id="res-R" class="resultado-sorteio">-</span>
-                    <button class="btn-sortear" onclick="sortear('R')">Sortear</button>
-                </div>
-            </div>
-
-            <div class="coluna-sorteio">
-                <div class="linha-sorteio" style="margin-bottom: 5px;">
-                    <span class="label-sorteio">FD:</span>
-                    <span id="res-FD" class="resultado-sorteio">-</span>
-                    <button class="btn-sortear" onclick="sortear('FD')">Sortear</button>
-                </div>
-                <div class="linha-sorteio" style="margin-bottom: 5px;">
-                    <span class="label-sorteio">A:</span>
-                    <span id="res-A" class="resultado-sorteio">-</span>
-                    <button class="btn-sortear" onclick="sortear('A')">Sortear</button>
-                </div>
+			<div class="coluna-sorteio">
+				<div class="linha-sorteio" style="margin-bottom: 5px;">
+					<span class="label-sorteio">C:</span>
+					<input type="text" id="res-C" class="resultado-sorteio input-editavel" value="-" maxlength="2">
+					<button class="btn-sortear" onclick="sortear('C')">Sortear</button>
+				</div>
+				<div class="linha-sorteio" style="margin-bottom: 5px;">
+					<span class="label-sorteio">I:</span>
+					<input type="text" id="res-I" class="resultado-sorteio input-editavel" value="-" maxlength="2">
+					<button class="btn-sortear" onclick="sortear('I')">Sortear</button>
+				</div>
 				<div class="linha-sorteio">
-                    <span class="label-sorteio">T:</span>
-                    <span id="res-T" class="resultado-sorteio">-</span>
-                    <button class="btn-sortear" onclick="sortear('T')">Sortear</button>
-                </div>
-            </div>
-        </div>
+					<span class="label-sorteio">R:</span>
+					<input type="text" id="res-R" class="resultado-sorteio input-editavel" value="-" maxlength="2">
+					<button class="btn-sortear" onclick="sortear('R')">Sortear</button>
+				</div>
+			</div>
+
+			<div class="coluna-sorteio">
+				<div class="linha-sorteio" style="margin-bottom: 5px;">
+					<span class="label-sorteio">FD:</span>
+					<input type="text" id="res-FD" class="resultado-sorteio input-editavel" value="-" maxlength="2">
+					<button class="btn-sortear" onclick="sortear('FD')">Sortear</button>
+				</div>
+				<div class="linha-sorteio" style="margin-bottom: 5px;">
+					<span class="label-sorteio">A:</span>
+					<input type="text" id="res-A" class="resultado-sorteio input-editavel" value="-" maxlength="2">
+					<button class="btn-sortear" onclick="sortear('A')">Sortear</button>
+				</div>
+				<div class="linha-sorteio">
+					<span class="label-sorteio">T:</span>
+					<input type="text" id="res-T" class="resultado-sorteio input-editavel" value="-" maxlength="2">
+					<button class="btn-sortear" onclick="sortear('T')">Sortear</button>
+				</div>
+			</div>
+		</div>
 
         <div class="nav-container">
             <button class="btn-nav" onclick="irPara('cat-comuns')">Comuns</button>
@@ -1441,14 +1459,14 @@
         function sortear(tipo) {
             const [min, max] = intervalos[modoAtual][tipo];
             const resultado = Math.floor(Math.random() * (max - min + 1)) + min;
-            document.getElementById(`res-${tipo}`).innerText = resultado;
+            document.getElementById(`res-${tipo}`).value = resultado;
         }
 
         function resetarTudo() {
 			// 1. Reseta os valores numéricos dos sorteios
 			['C', 'I', 'R', 'FD', 'A', 'T'].forEach(tipo => {
 				const el = document.getElementById(`res-${tipo}`);
-				if(el) el.innerText = '-';
+				if(el) el.value = '-';
 			});
 
 			// 2. Esconde todas as imagens e textos (spoiler)
@@ -1490,9 +1508,20 @@
 			};
 
 			const idResultado = mapaSorteio[idBase];
-			const valorSorteado = document.getElementById(idResultado)?.innerText;
+			const inputElement = document.getElementById(idResultado);
+			let valorSorteado = inputElement?.value.trim();
 
 			if (valorSorteado && valorSorteado !== '-') {
+				const num = parseInt(valorSorteado);
+				const tipoChave = idResultado.split('-')[1]; // Pega 'C', 'I', etc.
+				const [min, max] = intervalos[modoAtual][tipoChave];
+
+				// Se estiver fora do limite ou não for número, reseta para "-"
+				if (isNaN(num) || num < min || num > max) {
+					inputElement.value = "-";
+					return;
+				}
+				
 				const numeroFormatado = valorSorteado.padStart(2, '0');
 				
 				let containerBusca;
