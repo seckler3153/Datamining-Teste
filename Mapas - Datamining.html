@@ -150,6 +150,12 @@
 			pointer-events: auto !important;
 			z-index: 9999 !important;
 		}
+		
+		.btn-nav.modo-meeple-delete {
+			background-color: #D9534F !important; /* Vermelho */
+			color: #fff !important;
+			border: 2px solid #a00;
+		}
 
 		/* Evita que o grid intercepte o toque no modo Meeple */
 		body.modo-meeple-ativo .grid-overlay {
@@ -532,19 +538,22 @@
 				btn.onclick = () => {
 					// LÓGICA PARA MEEPLES (31 a 40)
 					if (i >= 31 && i <= 40) {
-						// Remove seleção de carimbo se houver
 						componenteSelecionado = null;
 						document.querySelectorAll('.btn-componente').forEach(b => b.classList.remove('selecionado'));
 						
-						// Se já existe no mapa, remove (opcional, conforme sua regra anterior)
-						const existente = document.querySelector(`.icone-mapa[data-comp-id="${i}"]`);
-						if (existente) {
-							if (confirm("Deseja remover este componente do mapa?")) {
-								existente.remove();
+						// Se for meeple (31-38), mantém a regra de apenas um no mapa
+						if (i <= 38) {
+							const existente = document.querySelector(`.icone-mapa[data-comp-id="${i}"]`);
+							if (existente) {
+								// Se clicar no botão e já houver um, ele foca ou remove
+								if (confirm("Este Meeple já está no mapa. Deseja removê-lo?")) {
+									existente.remove();
+								}
+								return;
 							}
-						} else {
-							posicionarMeepleOuEspecial(i);
 						}
+						// Se for 39 ou 40 (Firewall/Cripto), sempre adiciona um novo (permite múltiplos)
+						posicionarMeepleOuEspecial(i);
 						return;
 					}
 
@@ -570,64 +579,47 @@
 			
 			const dim = configMapas[tamanhoAtual].dim;
 			const containerMapa = document.getElementById('containerMapa');
-			
-			const multiplicador = 0.35; 
-			const size = (containerMapa.offsetWidth / dim) * multiplicador;
+			const size = (containerMapa.offsetWidth / dim) * 0.35;
 			
 			img.style.width = size + "px";
-			
-			if(posSalva) {
-				img.style.left = posSalva.left;
-				img.style.top = posSalva.top;
-			} else {
-				img.style.left = "50%";
-				img.style.top = "50%";
-			}
+			img.style.left = posSalva ? posSalva.left : "50%";
+			img.style.top = posSalva ? posSalva.top : "50%";
 
-			// Eventos de arrastar (Mouse)
+			// Função única de remoção
+			const tentarRemover = () => {
+				let nomeItem = "";
+				const id = parseInt(idComp);
+				if (id >= 31 && id <= 38) nomeItem = "este Meeple";
+				else if (id === 39) nomeItem = "este Firewall";
+				else if (id === 40) nomeItem = "esta Criptomoeda";
+
+				if (confirm(`Deseja remover ${nomeItem}?`)) {
+					img.remove();
+				}
+			};
+
+			// Evento para Mobile (Clique simples no modo DELETE)
+			img.onclick = (e) => {
+				const isMobile = window.innerWidth <= 850;
+				// Apenas componentes 39 e 40 são excluídos pelo clique no modo DELETE
+				if (isMobile && estadoMeepleMobile === 2 && (idComp == 39 || idComp == 40)) {
+					executarRemocao();
+				}
+			};
+
+			// Eventos para Arrastar e Clique Direito (Desktop)
 			img.onmousedown = (e) => {
-				if (e.button === 0) {
+				if (e.button === 0) { // Botão esquerdo: Arrastar
 					e.stopPropagation();
 					arrastandoElemento = img;
 				}
 			};
 
-			// --- NOVA LÓGICA DE REMOÇÃO COM CONFIRMAÇÃO ---
 			img.oncontextmenu = (e) => {
 				e.preventDefault();
-				
-				let pergunta = "";
-				const id = parseInt(idComp);
-
-				if (id === 31) {
-					pergunta = "Você gostaria de remover o meeple vermelho?";
-				} else if (id === 32) {
-					pergunta = "Você gostaria de remover o meeple laranja?";
-				} else if (id === 33) {
-					pergunta = "Você gostaria de remover o meeple amarelo";
-				} else if (id === 34) {
-					pergunta = "Você gostaria de remover o meeple verde?";
-				} else if (id === 35) {
-					pergunta = "Você gostaria de remover o meeple ciano?";
-				} else if (id === 36) {
-					pergunta = "Você gostaria de remover o meeple azul?";
-				} else if (id === 37) {
-					pergunta = "Você gostaria de remover o meeple roxo?";
-				} else if (id === 38) {
-					pergunta = "Você gostaria de remover o meeple magenta?";
-				} else if (id === 39) {
-					pergunta = "Você gostaria de remover este firewall?";
-				} else if (id === 40) {
-					pergunta = "Você gostaria de remover esta criptomoeda?";
-				}
-
-				if (pergunta !== "") {
-					if (confirm(pergunta)) {
-						img.remove();
-					}
-				} else {
-					// Para outros componentes que usem essa função mas não estejam no range 31-40
-					img.remove();
+				const isMobile = window.innerWidth <= 850;
+				if (!isMobile) { // Apenas Desktop usa o clique direito para deletar
+					tentarRemover();
 				}
 			};
 
@@ -848,7 +840,7 @@
 			}
 
 			// 3. MODO MEEPLE ATIVO (Não faz nada no grid)
-			if (modoMeepleMobile) return;
+			if (estadoMeepleMobile) return;
 
 			// 4. ESCONDER QUADRANTE (Clique direito no Desktop OU clique simples no Mobile sem nada selecionado)
 			if (e.button === 2 || (isMobile && !componenteSelecionado && estadoCaminhoMobile === 0)) {
@@ -1109,44 +1101,55 @@
 			}
 		}
 		
-		let modoMeepleMobile = false;
+		let estadoMeepleMobile = 0; // 0: OFF, 1: ON, 2: DELETE
 
 		function alternarModoMeeple() {
-			modoMeepleMobile = !modoMeepleMobile;
+			estadoMeepleMobile = (estadoMeepleMobile + 1) % 3;
 			const btn = document.getElementById('btnModoMeeple');
-    
-			if (modoMeepleMobile && estadoCaminhoMobile > 0) alternarModoCaminho();
+			
+			// Reset de classes e estados
+			btn.classList.remove('modo-meeple', 'modo-meeple-delete');
+			document.body.classList.remove('modo-meeple-ativo');
 
-			if (modoMeepleMobile) {
+			if (estadoMeepleMobile === 1) { // MODO ON
 				btn.innerText = "Meeple: ON";
 				btn.classList.add('modo-meeple');
 				document.body.classList.add('modo-meeple-ativo');
+				// Desativa outros modos para evitar conflito
+				if (estadoCaminhoMobile > 0) {
+					estadoCaminhoMobile = 0;
+					const btnCam = document.getElementById('btnModoCaminho');
+					btnCam.innerText = "Caminhos: OFF";
+					btnCam.classList.remove('modo-interno', 'modo-externo');
+				}
 				componenteSelecionado = null;
-				document.querySelectorAll('.btn-componente').forEach(b => b.classList.remove('selecionado'));
-			} else {
+			} 
+			else if (estadoMeepleMobile === 2) { // MODO DELETE
+				btn.innerText = "Meeple: DELETE";
+				btn.classList.add('modo-meeple-delete');
+				document.body.classList.add('modo-meeple-ativo');
+				componenteSelecionado = null;
+			} 
+			else { // MODO OFF
 				btn.innerText = "Meeple: OFF";
-				btn.classList.remove('modo-meeple');
-				document.body.classList.remove('modo-meeple-ativo'); // Desativa sobreposição
 			}
 		}
 		
 		// Suporte para arrastar com o dedo (Touch Events)
 		document.addEventListener('touchstart', function(e) {
-			if (e.target.classList.contains('arrastavel') && modoMeepleMobile) {
+			// Só permite arrastar se estiver no modo Meeple: ON (estado 1)
+			if (e.target.classList.contains('arrastavel') && estadoMeepleMobile === 1) {
 				arrastandoElemento = e.target;
-				// Evita rolar a página enquanto arrasta o Meeple
 				e.preventDefault();
 			}
 		}, { passive: false });
 
 		document.addEventListener('touchmove', function(e) {
-			if (arrastandoElemento && modoMeepleMobile) {
+			if (arrastandoElemento && estadoMeepleMobile === 1) {
 				const rect = document.getElementById('containerMapa').getBoundingClientRect();
 				const touch = e.touches[0];
-        
 				let x = Math.max(0, Math.min(touch.clientX - rect.left, rect.width));
 				let y = Math.max(0, Math.min(touch.clientY - rect.top, rect.height));
-        
 				arrastandoElemento.style.left = x + "px";
 				arrastandoElemento.style.top = y + "px";
 				e.preventDefault();
