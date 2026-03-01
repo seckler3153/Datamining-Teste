@@ -58,7 +58,7 @@
         }
 
         .grid-componentes {
-            grid-template-rows: repeat(9, 1fr) !important;
+            grid-template-rows: repeat(10, 1fr) !important;
             grid-template-columns: repeat(4, 1fr) !important;
             grid-auto-flow: column !important;
         }
@@ -345,7 +345,7 @@
 
     .grid-componentes {
         display: grid;
-        grid-template-rows: repeat(9, 1fr);
+        grid-template-rows: repeat(10, 1fr);
         grid-template-columns: repeat(4, 1fr);
         grid-auto-flow: column;
         gap: 6px;
@@ -395,11 +395,11 @@
                 • Segure "Shift" para colocar múltiplos do mesmo componente e aperte "Barra de Espaço" para cancelar a seleção de um botão.<br>
                 • Ao clicar em um quadrante e arrastar para outro, é criado um caminho entre eles.<br>
                 • Segure "Shift" criando um caminho para criá-lo de forma externa ao mapa.<br>
-                • Os botões de Meeple e de Firewall entram no meio do mapa e podem ser arrastados pelo mapa.<br>
+                • Os botões de Meeple, de Firewall e de Criptomoeda entram no meio do mapa e podem ser arrastados pelo mapa.<br>
                 • Clicar com o botão direito sobre um quadrante o faz ficar invisível, para representar quadrantes sem pastas.<br>
                 • Para apagar uma imagem de um botão em um quadrante, clique duas vezes com o botão esquerdo do mouse sobre ela.<br>
                 • Para apagar um caminho, clique com o botão direito do mouse ou crie outro caminho por cima, de mesmo tamanho e mesma direção.<br>
-                • Para apagar um Meeple ou uma Firewall, clique com o botão direito sobre eles.<br>
+                • Para apagar um Meeple, um Firewall ou uma Criptomoeda, clique com o botão direito sobre eles.<br>
                 • Para qualquer problema, Ctrl + Z é seu amigo.
             </div>
             <button class="btn-nav btn-reset" onclick="resetarGridAtual()">Resetar Mapa Atual</button>
@@ -519,86 +519,121 @@
         }
 
         function gerarBotoesComponentes() {
-            const container = document.getElementById('gridComponentes');
-            container.innerHTML = '';
-            for (let i = 1; i <= 36; i++) {
-                const btn = document.createElement('button');
-                btn.className = 'btn-componente';
-                btn.dataset.id = i;
-                const img = document.createElement('img');
-                img.src = `Componente (${i}).png`;
-                btn.appendChild(img);
-                
-                btn.onclick = () => {
-                    if (i >= 28 && i <= 35) {
-                        const existente = document.querySelector(`.icone-mapa[data-comp-id="${i}"]`);
-                        if (existente) {
-                            if (confirm("Tem certeza que quer apagar o meeple do jogador?")) {
-                                existente.remove();
-                            }
-                            return;
-                        } else {
-                            posicionarMeepleOuEspecial(i);
-                            return;
-                        }
-                    }
+			const container = document.getElementById('gridComponentes');
+			container.innerHTML = '';
+			for (let i = 1; i <= 40; i++) {
+				const btn = document.createElement('button');
+				btn.className = 'btn-componente';
+				btn.dataset.id = i;
+				const img = document.createElement('img');
+				img.src = `Componente (${i}).png`;
+				btn.appendChild(img);
+				
+				btn.onclick = () => {
+					// LÓGICA PARA MEEPLES (31 a 40)
+					if (i >= 31 && i <= 40) {
+						// Remove seleção de carimbo se houver
+						componenteSelecionado = null;
+						document.querySelectorAll('.btn-componente').forEach(b => b.classList.remove('selecionado'));
+						
+						// Se já existe no mapa, remove (opcional, conforme sua regra anterior)
+						const existente = document.querySelector(`.icone-mapa[data-comp-id="${i}"]`);
+						if (existente) {
+							if (confirm("Deseja remover este componente do mapa?")) {
+								existente.remove();
+							}
+						} else {
+							posicionarMeepleOuEspecial(i);
+						}
+						return;
+					}
 
-                    if (i === 36) {
-                        posicionarMeepleOuEspecial(36);
-                        return;
-                    }
+					// LÓGICA PARA CARIMBOS (1 a 30)
+					document.querySelectorAll('.btn-componente').forEach(b => b.classList.remove('selecionado'));
+					if (componenteSelecionado === i) {
+						componenteSelecionado = null;
+					} else {
+						componenteSelecionado = i;
+						btn.classList.add('selecionado');
+					}
+				};
+				container.appendChild(btn);
+			}
+		}
 
-                    document.querySelectorAll('.btn-componente').forEach(b => b.classList.remove('selecionado'));
-                    if (componenteSelecionado === i) {
-                        componenteSelecionado = null;
-                    } else {
-                        componenteSelecionado = i;
-                        btn.classList.add('selecionado');
-                    }
-                };
-                container.appendChild(btn);
-            }
-        }
+		function posicionarMeepleOuEspecial(idComp, posSalva = null) {
+			const camada = document.getElementById('camadaIconesUltra');
+			const img = document.createElement('img');
+			img.src = `Componente (${idComp}).png`;
+			img.className = 'icone-mapa arrastavel';
+			img.dataset.compId = idComp;
+			
+			const dim = configMapas[tamanhoAtual].dim;
+			const containerMapa = document.getElementById('containerMapa');
+			
+			const multiplicador = 0.35; 
+			const size = (containerMapa.offsetWidth / dim) * multiplicador;
+			
+			img.style.width = size + "px";
+			
+			if(posSalva) {
+				img.style.left = posSalva.left;
+				img.style.top = posSalva.top;
+			} else {
+				img.style.left = "50%";
+				img.style.top = "50%";
+			}
 
-        function posicionarMeepleOuEspecial(idComp, posSalva = null) {
-            const camada = document.getElementById('camadaIconesUltra');
-            const img = document.createElement('img');
-            img.src = `Componente (${idComp}).png`;
-            img.className = 'icone-mapa arrastavel';
-            img.dataset.compId = idComp;
-            
-            const dim = configMapas[tamanhoAtual].dim;
-            const containerMapa = document.getElementById('containerMapa');
-            const multiplicador = (idComp >= 28 && idComp <= 36) ? 0.4 : 0.7;
-            const size = (containerMapa.offsetWidth / dim) * multiplicador;
-            
-            img.style.width = size + "px";
-            
-            if(posSalva) {
-                img.style.left = posSalva.left;
-                img.style.top = posSalva.top;
-            } else {
-                img.style.left = "50%";
-                img.style.top = "50%";
-            }
+			// Eventos de arrastar (Mouse)
+			img.onmousedown = (e) => {
+				if (e.button === 0) {
+					e.stopPropagation();
+					arrastandoElemento = img;
+				}
+			};
 
-            img.onmousedown = (e) => {
-                if (e.button === 0) {
-                    e.stopPropagation();
-                    arrastandoElemento = img;
-                }
-            };
+			// --- NOVA LÓGICA DE REMOÇÃO COM CONFIRMAÇÃO ---
+			img.oncontextmenu = (e) => {
+				e.preventDefault();
+				
+				let pergunta = "";
+				const id = parseInt(idComp);
 
-            img.oncontextmenu = (e) => {
-                e.preventDefault();
-                if(confirm("Deseja remover este meeple?")) {
-                    img.remove();
-                }
-            };
+				if (id === 31) {
+					pergunta = "Você gostaria de remover o meeple vermelho?";
+				} else if (id === 32) {
+					pergunta = "Você gostaria de remover o meeple laranja?";
+				} else if (id === 33) {
+					pergunta = "Você gostaria de remover o meeple amarelo";
+				} else if (id === 34) {
+					pergunta = "Você gostaria de remover o meeple verde?";
+				} else if (id === 35) {
+					pergunta = "Você gostaria de remover o meeple ciano?";
+				} else if (id === 36) {
+					pergunta = "Você gostaria de remover o meeple azul?";
+				} else if (id === 37) {
+					pergunta = "Você gostaria de remover o meeple roxo?";
+				} else if (id === 38) {
+					pergunta = "Você gostaria de remover o meeple magenta?";
+				} else if (id === 39) {
+					pergunta = "Você gostaria de remover este firewall?";
+				} else if (id === 40) {
+					pergunta = "Você gostaria de remover esta criptomoeda?";
+				}
 
-            camada.appendChild(img);
-            if(!posSalva) salvarAcao('icone', img);
-        }
+				if (pergunta !== "") {
+					if (confirm(pergunta)) {
+						img.remove();
+					}
+				} else {
+					// Para outros componentes que usem essa função mas não estejam no range 31-40
+					img.remove();
+				}
+			};
+
+			camada.appendChild(img);
+			if(!posSalva) salvarAcao('icone', img);
+		}
 
         function salvarEstadoAtual() {
             const estado = { icones: [], linhas: [], escondidos: [] };
@@ -773,24 +808,54 @@
         }
 
         function lidarMouseDown(e, cell) {
-            if (e.button === 0 && componenteSelecionado) {
-                posicionarIconeFixo(cell);
-                return;
-            }
-            if (e.button === 0) {
-                cellInicial = cell;
-                criandoLinha = true;
-                const centro = getCentro(cell);
-                const lg = document.getElementById('linhaGuia');
-                lg.setAttribute("x1", centro.x); lg.setAttribute("y1", centro.y);
-                lg.setAttribute("x2", centro.x); lg.setAttribute("y2", centro.y);
-                lg.setAttribute("stroke-width", calcularGrossura());
-                lg.style.display = "block";
-            } else if (e.button === 2) {
-                cell.classList.toggle('escondido');
-                salvarAcao('esconder', cell);
-            }
-        }
+			const isMobile = window.innerWidth <= 850;
+
+			// 1. PRIORIDADE MÁXIMA: Se tem um componente de carimbo (1 a 30) selecionado
+			if (componenteSelecionado) {
+				posicionarIconeFixo(cell);
+				return; // Interrompe aqui para não esconder o quadrante ou iniciar linha
+			}
+
+			// 2. LÓGICA DE CAMINHOS (Mobile ou Desktop com botão esquerdo)
+			if (estadoCaminhoMobile > 0 || (e.button === 0 && !isMobile)) {
+				// Se for Mobile usando o botão de modo caminho
+				if (estadoCaminhoMobile > 0) {
+					if (!primeiroCliqueCaminho) {
+						primeiroCliqueCaminho = cell;
+						cell.classList.add('selecao-caminho');
+					} else {
+						const c1 = getCentro(primeiroCliqueCaminho);
+						const c2 = getCentro(cell);
+						const usarShift = (estadoCaminhoMobile === 2);
+						criarLinhaFinal(c1, c2, usarShift);
+						primeiroCliqueCaminho.classList.remove('selecao-caminho');
+						primeiroCliqueCaminho = null;
+					}
+					return;
+				} 
+				// Se for Desktop iniciando uma linha
+				else if (e.button === 0) {
+					cellInicial = cell;
+					criandoLinha = true;
+					const centro = getCentro(cell);
+					const lg = document.getElementById('linhaGuia');
+					lg.setAttribute("x1", centro.x); lg.setAttribute("y1", centro.y);
+					lg.setAttribute("x2", centro.x); lg.setAttribute("y2", centro.y);
+					lg.setAttribute("stroke-width", calcularGrossura());
+					lg.style.display = "block";
+					return;
+				}
+			}
+
+			// 3. MODO MEEPLE ATIVO (Não faz nada no grid)
+			if (modoMeepleMobile) return;
+
+			// 4. ESCONDER QUADRANTE (Clique direito no Desktop OU clique simples no Mobile sem nada selecionado)
+			if (e.button === 2 || (isMobile && !componenteSelecionado && estadoCaminhoMobile === 0)) {
+				cell.classList.toggle('escondido');
+				salvarAcao('esconder', cell);
+			}
+		}
 
         function posicionarIconeFixo(cell) {
 			const index = cell.dataset.index;
@@ -798,7 +863,7 @@
 			const isMobile = window.innerWidth <= 850;
     
 			// Determina a camada correta com base no componente selecionado
-			let idCamada = (componenteSelecionado >= 19 && componenteSelecionado <= 27) ? 'camadaIconesSuperior' : 'camadaIconesBase';
+			let idCamada = (componenteSelecionado >= 21 && componenteSelecionado <= 29) ? 'camadaIconesSuperior' : 'camadaIconesBase';
 			const camada = document.getElementById(idCamada);
     
 			// Busca se já existe um ícone neste quadrante
@@ -1062,64 +1127,6 @@
 				btn.innerText = "Meeple: OFF";
 				btn.classList.remove('modo-meeple');
 				document.body.classList.remove('modo-meeple-ativo'); // Desativa sobreposição
-			}
-		}
-
-		// Atualize sua função lidarMouseDown para incluir esta nova lógica de interceptação
-		function lidarMouseDown(e, cell) {
-			// LÓGICA MOBILE DE CAMINHOS (Mantida conforme original)
-			const isMobile = window.innerWidth <= 850;
-
-			// LÓGICA MOBILE DE ESCONDER QUADRANTE (Apenas se nenhuma ferramenta estiver ativa)
-			if (isMobile && estadoCaminhoMobile === 0 && !modoMeepleMobile && !componenteSelecionado) {
-				cell.classList.toggle('escondido');
-				salvarAcao('esconder', cell);
-				return; // Interrompe para não disparar outras lógicas
-			}
-			
-			
-			if (estadoCaminhoMobile > 0) {
-				if (!primeiroCliqueCaminho) {
-					primeiroCliqueCaminho = cell;
-					cell.classList.add('selecao-caminho');
-				} else {
-					const c1 = getCentro(primeiroCliqueCaminho);
-					const c2 = getCentro(cell);
-					const usarShift = (estadoCaminhoMobile === 2);
-					criarLinhaFinal(c1, c2, usarShift);
-					primeiroCliqueCaminho.classList.remove('selecao-caminho');
-					primeiroCliqueCaminho = null;
-				}
-				return; 
-			}
-    
-			if (modoMeepleMobile) {
-				return;
-			}
-
-			// --- LÓGICA DESKTOP ---
-
-			// 1. Clique Esquerdo (Botão 0)
-			if (e.button === 0) {
-				if (componenteSelecionado) {
-					posicionarIconeFixo(cell);
-				} else {
-					// Se não há componente, inicia a criação de caminho
-					cellInicial = cell;
-					criandoLinha = true;
-					const centro = getCentro(cell);
-					const lg = document.getElementById('linhaGuia');
-					lg.setAttribute("x1", centro.x); lg.setAttribute("y1", centro.y);
-					lg.setAttribute("x2", centro.x); lg.setAttribute("y2", centro.y);
-					lg.setAttribute("stroke-width", calcularGrossura());
-					lg.style.display = "block";
-				}
-			} 
-			// 2. Clique Direito (Botão 2)
-			else if (e.button === 2) {
-				// Apenas esconde/revela se não houver componente sendo colocado
-				cell.classList.toggle('escondido');
-				salvarAcao('esconder', cell);
 			}
 		}
 		
