@@ -586,7 +586,7 @@
 			img.style.top = posSalva ? posSalva.top : "50%";
 
 			// Função única de remoção
-			const tentarRemover = () => {
+			const executarRemocao = () => {
 				let nomeItem = "";
 				const id = parseInt(idComp);
 				if (id >= 31 && id <= 38) nomeItem = "este Meeple";
@@ -619,7 +619,7 @@
 				e.preventDefault();
 				const isMobile = window.innerWidth <= 850;
 				if (!isMobile) { // Apenas Desktop usa o clique direito para deletar
-					tentarRemover();
+					executarRemocao();
 				}
 			};
 
