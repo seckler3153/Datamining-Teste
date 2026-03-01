@@ -296,23 +296,23 @@
     let modoAtual = 'pvp';
     let dificuldadeAtual = 'normal';
     let coresSelecionadas = [];
-    const MAPA_CORES = { "Vermelho": 10, "Laranja": 11, "Amarelo": 12, "Verde": 13, "Ciano": 14, "Azul": 15, "Roxo": 16, "Magenta": 17 };
+    const MAPA_CORES = { "Vermelho": 11, "Laranja": 12, "Amarelo": 13, "Verde": 14, "Ciano": 15, "Azul": 16, "Roxo": 17, "Magenta": 18 };
     const LETRAS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     const CONFIG = {
-        "pvp": {
-            "muito-facil": { tamanho: 5, seguras: ["A1", "A3", "A5", "C1", "C5", "E1", "E3", "E5"], c7: [0, 0], c9: [0, 0], vazio: 0 },
-            "facil": { tamanho: 7, seguras: ["B2", "B4", "B6", "D2", "D6", "F2", "F4", "F6"], c7: [1, 1], c9: [0, 1], vazio: 0.33 },
-            "normal": { tamanho: 9, seguras: ["B2", "B5", "B8", "E2", "E8", "H2", "H5", "H8"], c7: [2, 2], c9: [1, 3], vazio: 0.33 },
-            "dificil": { tamanho: 12, seguras: null, c7: [3, 3], c9: [2, 4], vazio: 0.33 },
-            "extremo": { tamanho: 15, seguras: null, c7: [5, 5], c9: [4, 6], vazio: 0.33 }
-        },
-        "coop": {
-            "facil": { tamanho: 9, seguras: ["B2", "B5", "B8", "E2", "E8", "H2", "H5", "H8"], c7: [2, 2], c9: [1, 3], vazio: 0.33 },
-            "normal": { tamanho: 12, seguras: ["B2", "B6", "B11", "F11", "G2", "K2", "K7", "K11"], c7: [3, 3], c9: [2, 5], vazio: 0.33 },
-            "dificil": { tamanho: 15, seguras: null, c7: [5, 5], c9: [4, 7], vazio: 0.33 }
-        }
-    };
+		"pvp": {
+			"muito-facil": { tamanho: 5, seguras: ["A1", "A3", "A5", "C1", "C5", "E1", "E3", "E5"], c7: [0, 0], c9: [0, 0], c10: [0, 0], c20: 1, c30: 0, vazio: 0 },
+			"facil": { tamanho: 7, seguras: ["B2", "B4", "B6", "D2", "D6", "F2", "F4", "F6"], c7: [1, 1], c9: [0, 1], c10: [0, 0], c20: 2, c30: 0, vazio: 0.33 },
+			"normal": { tamanho: 9, seguras: ["B2", "B5", "B8", "E2", "E8", "H2", "H5", "H8"], c7: [2, 2], c9: [1, 3], c10: [2, 3], c20: 3, c30: 0, vazio: 0.33 },
+			"dificil": { tamanho: 12, seguras: null, c7: [3, 3], c9: [2, 4], c10: [3, 4], c20: 4, c30: 0, vazio: 0.33 },
+			"extremo": { tamanho: 15, seguras: null, c7: [5, 5], c9: [4, 6], c10: [4, 6], c20: 6, c30: 0, vazio: 0.33 }
+		},
+		"coop": {
+			"facil": { tamanho: 9, seguras: ["B2", "B5", "B8", "E2", "E8", "H2", "H5", "H8"], c7: [2, 2], c9: [1, 3], c10: [2, 3], c20: 0, c30: 3, vazio: 0.33 },
+			"normal": { tamanho: 12, seguras: ["B2", "B6", "B11", "F11", "G2", "K2", "K7", "K11"], c7: [3, 3], c9: [2, 5], c10: [3, 4], c20: 0, c30: 4, vazio: 0.33 },
+			"dificil": { tamanho: 15, seguras: null, c7: [5, 5], c9: [4, 7], c10: [4, 6], c20: 0, c30: 6, vazio: 0.33 }
+		}
+	};
 
     window.onload = () => renderizarDificuldades();
     function setModo(val) { modoAtual = val; dificuldadeAtual = 'normal'; atualizarVisualBotoes('grid-modo', val); renderizarDificuldades(); }
@@ -352,10 +352,10 @@
 
 		const eZonaSegura = (src) => {
 			return src.includes("Componente%20(1).png") || 
-				   src.includes("Componente%20(10)") || src.includes("Componente%20(11)") || 
-				   src.includes("Componente%20(12)") || src.includes("Componente%20(13)") || 
-				   src.includes("Componente%20(14)") || src.includes("Componente%20(15)") || 
-				   src.includes("Componente%20(16)") || src.includes("Componente%20(17)");
+				   src.includes("Componente%20(11)") || src.includes("Componente%20(12)") || 
+				   src.includes("Componente%20(13)") || src.includes("Componente%20(14)") || 
+				   src.includes("Componente%20(15)") || src.includes("Componente%20(16)") || 
+				   src.includes("Componente%20(17)") || src.includes("Componente%20(18)");
 		};
 
 		const eComponenteEspecial = (src) => src.includes("Componente%20(7)") || src.includes("Componente%20(8)") || src.includes("Componente%20(9)");
@@ -583,11 +583,13 @@
 				const isChaveAcesso = (s) => s.includes("Componente%20(7)");
 				const isQuarentena = (s) => s.includes("Componente%20(9)");
 				const isNeutra = (s) => s.includes("Componente%20(2)");
+				const isNovoComponente = (s) => s.includes("Componente%20(10)") || s.includes("Componente%20(20)") || s.includes("Componente%20(30)");
 				if (isZonaSegura(s1) && isZonaSegura(s2)) return false;
 				if ((isDiretorioPrincipal(s1) && isZonaSegura(s2)) || (isDiretorioPrincipal(s2) && isZonaSegura(s1))) return false;
 				if (isChaveAcesso(s1) && (isZonaSegura(s2) || isDiretorioPrincipal(s2) || isChaveAcesso(s2))) return false;
 				if (isChaveAcesso(s2) && (isZonaSegura(s1) || isDiretorioPrincipal(s1) || isChaveAcesso(s1))) return false;
 				if ((isQuarentena(s1) && isZonaSegura(s2)) || (isQuarentena(s2) && isZonaSegura(s1))) return false;
+				if ((isNovoComponente(s1) && isZonaSegura(s2)) || (isNovoComponente(s2) && isZonaSegura(s1))) return false;
 				const extrairNum = (s) => s.match(/Componente%20\((\d+)\)/)?.[1];
 				if (!isNeutra(s1) && !isNeutra(s2) && extrairNum(s1) === extrairNum(s2)) return false;
 				return true;
@@ -635,7 +637,7 @@
 		document.getElementById('res-coordenada').innerText = letraSorteada + numeroSorteado;
 	}
 
-function gerarMapa() {
+	function gerarMapa() {
 		const conf = CONFIG[modoAtual][dificuldadeAtual], tamanho = conf.tamanho;
 		const container = document.getElementById('container-mapa'), gridBase = document.getElementById('grid');
 		
@@ -789,6 +791,37 @@ function gerarMapa() {
 					let p = cand[Math.floor(Math.random()*cand.length)];
 					document.getElementById(`slot-icon-${p.r}-${p.c}`).innerHTML = `<img src="${path}" class="pasta-img">`;
 				}
+			}
+		});
+		
+		// --- NOVOS COMPONENTES (10, 20 e 30) ---
+		let filaNovos = [];
+		// Componente 10 (Atalho)
+		if(conf.c10) {
+			let c10qtd = Math.floor(Math.random()*(conf.c10[1]-conf.c10[0]+1))+conf.c10[0];
+			for(let i=0; i<c10qtd; i++) filaNovos.push("Componente (10).png");
+		}
+		// Componente 20 (PvP)
+		if(modoAtual === 'pvp' && conf.c20) {
+			for(let i=0; i<conf.c20; i++) filaNovos.push("Componente (20).png");
+		}
+		// Componente 30 (Coop)
+		if(modoAtual === 'coop' && conf.c30) {
+			for(let i=0; i<conf.c30; i++) filaNovos.push("Componente (30).png");
+		}
+
+		filaNovos.forEach(path => {
+			let cand = [];
+			for(let r=0; r<tamanho; r++) {
+				for(let c=0; c<tamanho; c++) {
+					if(isSlotVazio(r, c) && document.getElementById(`cell-${r}-${c}`).getAttribute('data-tipo') !== 'vazio') {
+						cand.push({r, c});
+					}
+				}
+			}
+			if(cand.length > 0) {
+				let p = cand[Math.floor(Math.random()*cand.length)];
+				document.getElementById(`slot-icon-${p.r}-${p.c}`).innerHTML = `<img src="${path}" class="pasta-img">`;
 			}
 		});
 
