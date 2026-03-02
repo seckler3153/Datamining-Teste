@@ -814,11 +814,31 @@
 			let cand = [];
 			for(let r=0; r<tamanho; r++) {
 				for(let c=0; c<tamanho; c++) {
+					// Verifica se o slot está livre e não é uma célula de tipo "vazio"
 					if(isSlotVazio(r, c) && document.getElementById(`cell-${r}-${c}`).getAttribute('data-tipo') !== 'vazio') {
-						cand.push({r, c});
+						
+						// NOVA REGRA: Verifica se já existe este componente na mesma linha ou coluna
+						let conflito = false;
+						for(let j=0; j<tamanho; j++) {
+							// Checa linha r, todas as colunas j
+							let slotLinha = document.getElementById(`slot-icon-${r}-${j}`);
+							// Checa coluna c, todas as linhas j
+							let slotColuna = document.getElementById(`slot-icon-${j}-${c}`);
+
+							if((slotLinha && slotLinha.innerHTML.includes(path)) || 
+							   (slotColuna && slotColuna.innerHTML.includes(path))) {
+								conflito = true;
+								break;
+							}
+						}
+
+						if(!conflito) cand.push({r, c});
 					}
 				}
 			}
+			
+			// Tenta posicionar seguindo a regra; se não houver espaço restrito, 
+			// ele ignora esse componente específico para não travar o loop
 			if(cand.length > 0) {
 				let p = cand[Math.floor(Math.random()*cand.length)];
 				document.getElementById(`slot-icon-${p.r}-${p.c}`).innerHTML = `<img src="${path}" class="pasta-img">`;
